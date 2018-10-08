@@ -23,7 +23,7 @@ public class Main{
 
         // MASODIK VALTOZAT
 
-        // int sum = 0;
+        // double sum = 0;
 
         // for (String a : args) {
         //     Boolean mehet = true;

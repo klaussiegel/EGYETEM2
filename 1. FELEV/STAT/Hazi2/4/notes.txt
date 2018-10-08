@@ -1,0 +1,5 @@
+Suruseg:
+Integral on R ( f(x) dx )  =  1
+=> alfa = ?
+
+Eloszlas = Integral -OO -> X ( Suruseg )

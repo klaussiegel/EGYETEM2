@@ -8,16 +8,18 @@ public class Main{
     public static void main(String[] args) {
         // ELSO VALTOZAT
 
-        // try {
-        //     int sum = 0;
-        //     for (String a : args) {
+        // int sum = 0;
+
+        // for (String a : args) {
+        //     try {
         //         int i = Integer.parseInt(a);
         //         sum += i;
+        //     } catch (Exception e) {
+        //         System.out.println("Invalid number format!");
         //     }
-        //     System.out.println("The sum of the arguments: "+sum);
-        // } catch (Exception e) {
-        //     System.out.println("Invalid number format!");
         // }
+
+        // System.out.println("The sum of the arguments: "+sum);
 
         // MASODIK VALTOZAT
 
@@ -25,10 +27,10 @@ public class Main{
 
         // for (String a : args) {
         //     Boolean mehet = true;
-        //     int i=0;
+        //     double i=0;
 
         //     try {
-        //         i = Integer.parseInt(a);
+        //         i = Double.parseDouble(a);
         //     } catch (Exception e) {
         //         mehet = false;
         //     }
@@ -43,15 +45,19 @@ public class Main{
         int sum_paros = 0;
         int sum_paratlan = 0;
 
-        try {
-            for (int i=0; i<args.length; ++i) {
-                int a = Integer.parseInt(args[i]);
-                if (i%2==0) sum_paros+=a;
-                else sum_paratlan+=a;
+        for (String x : args) {
+            int a;
+            try {
+                a = Integer.parseInt(x);
+            } catch (Exception e) {
+                System.out.println("Invalid number format!");
+                a = 0;
             }
-            System.out.println("\nThe sum of the even-indexed arguments: "+sum_paros+"\nThe sum of the odd-indexed arguments: "+sum_paratlan);
-        } catch (Exception e) {
-            System.out.println("Invalid number format!");
+
+            if (a%2==0) sum_paros+=a;
+            else sum_paratlan+=a;
         }
+
+        System.out.println("\nThe sum of the even-indexed arguments: "+sum_paros+"\nThe sum of the odd-indexed arguments: "+sum_paratlan);
     }
 }

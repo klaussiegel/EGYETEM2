@@ -10,7 +10,12 @@ public class Main {
 
         int n = 10;
 
-        if (args.length>0) n = Integer.parseInt(args[0]);
+        try {
+            if (args.length>0) n = Integer.parseInt(args[0]);
+        } catch (Exception e) {
+            System.out.println("\n\nArgument is NaN!\n\n");
+            return;
+        }
 
         Integer[][] a = new Integer[n][];
         int counter = 1;

@@ -1,3 +1,7 @@
+% Oláh Tamás-Lajos
+% otim1750
+% 523 / 2
+
 % -----------
 % Description
 % -----------
@@ -9,7 +13,7 @@
 % -----
 % intial_value      - an integer which is required by the uniform integer
 %                     random number generator (0 < initial_value < m)
-% generator_type    - specifies the type of the used uniform integer radom
+% generator_type    - specifies the type of the used uniform integer random
 %                     number generator, that can be set as 'URNG1'/'URNG2' or 1/2
 % [alpha, beta]     - all elements of the output sequence \mathbf{Y} will fall in this range
 % n                 - the size of the output sequence
@@ -23,14 +27,21 @@
 %
 function [Y, new_initial_value] = URealRNG(initial_value, generator_type, alpha, beta, n)
 
-switch (generator_type)
-    case {'URNG1', 1}
-        m = 2^31 - 1;
-        [Y, new_initial_value] = URNG1(initial_value, n);
-        Y = Y ./ (m - 1);
-        
-    % handle another integer uniform random number generator
-    ...    
-end
+    switch (generator_type)
+        case {'URNG1', 1}
+            m = 2^31 - 1;
+            [Y, new_initial_value] = URNG1(initial_value, n);
+            Y = Y ./ (m - 1);
 
-Y = alpha + Y .* (beta - alpha);
+        % handle another integer uniform random number generator
+        case {'URNG2',2}
+            m = 2^31 - 1;
+            [Y,new_initial_value] = URNG2(initial_value, n);
+            Y = Y ./ (m-1);
+
+        case {'ULEcuyerRNG',3}
+            Y = ULEcuyerRNG(1,n);
+    end
+
+    Y = alpha + Y .* (beta - alpha);
+end

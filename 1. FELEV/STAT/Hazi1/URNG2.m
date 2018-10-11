@@ -1,7 +1,11 @@
+% Oláh Tamás-Lajos
+% otim1750
+% 523 / 2
+
 % -----------
 % Description
 % -----------
-% By means of parameters $m = 2^{31}-1, a= 7^5$ and c = 0, the function implements a specialized
+% By means of parameters $m = 2^{31}-1, a= 2^16-1 $ and c = 0, the function implements a specialized
 % version of the linear congruential generator X_{i+1} = \left(aX_{i} +c \right) \mod m, i \ge 2. 
 % -----
 % Input
@@ -17,10 +21,13 @@
 % new_initial_value - an integer that can be used as an initial value in
 %                     case of consecutive random sequence generations
 %
-function [X, new_initial_value] = URNG1(initial_value, n)
 
-m = 2^31-1;
-a = 7^5;
-c = 0;
-
-[X, new_initial_value] = LinearCongruentialGenerator(m, a, c, initial_value, n);
+function [X, new_init_val] = URNG2(init_val, n)
+    m = 2^31-1;
+    a = 2^16+3;
+    c = 0;
+    
+    [X, new_init_val] = LinearCongruentialGenerator(m,a,c, init_val, n);
+    
+    hist(X);
+end

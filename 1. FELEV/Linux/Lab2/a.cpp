@@ -42,8 +42,7 @@ void sigterm_handler_unlock(int sig) {
 	}
 
 	cout << "\n\t\t(CHILD2) SIGINT UNBLOCKED!\n";
-
-	exit(0);
+	return;
 }
 
 void sigterm_handler_print(int sig) {
@@ -72,7 +71,7 @@ int main() {
 
 	if (pid1==0) {
 		// CHILD1
-
+		cout << "\n\n\t(CHILD 1) STARTED (): " << getpid() << "\n";
 		sigset_t new_mask;
 
 		if ((sigemptyset(&new_mask)==-1) || (sigaddset(&new_mask,SIGINT)==-1)) {
@@ -94,6 +93,7 @@ int main() {
 
 		if (pid2==0) {
 			// CHILD2
+			cout << "\n\n\t(CHILD2) STARTED (UNBLOCK SIGINT - got SIGTERM = unblock SIGINT & die): " << getpid() << "\n";
 
 			// SIGINT(2) is blocked here, too, because the child process inherited
 			// the modified signal mask of the parent process
@@ -107,8 +107,12 @@ int main() {
 			while (true) {
 				pause();
 			}
+
+			// exit(0);
 		} else {
-			// PARENT2
+			// PARENT
+
+			cout << "\n\n\t(CHILD1) WAITING (SIGTERM - print & die): " << getpid() << "\n";
 
 			// if (sigaction(SIGTERM, &newAction3, &oldAction) < 0) {
 			// 	cout << "\nSIGACTION ERROR!\n";
@@ -119,10 +123,12 @@ int main() {
 			while (true) {
 				pause();
 			}
+			// exit(0);
 		}
 
-		exit(0);
 	}
+
+	cout << "\n\n\t(PARENT) WAITING (SIGTERM - print & wait & die): " << getpid() << "\n";
 
 	// PARENT1
 	// if (sigaction(SIGTERM, &newAction2, &oldAction) < 0) {
@@ -135,6 +141,8 @@ int main() {
 	while (true) {
 		pause();
 	}
+
+	cout << "\n\nDONE\n\n";
 
 	return 0;
 }

@@ -5,8 +5,8 @@
 package core;
 
 public class Vehicle {
-    private String type;
-    private int age;
+    protected String type;
+    protected int age;
 
     public Vehicle(String a, int b) {
         this.type = a;

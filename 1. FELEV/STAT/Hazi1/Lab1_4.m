@@ -21,18 +21,18 @@ function probability = Lab1_4()
             nd_fixable = (10-fixable)/(30-j+1);
             nd_bad = (4-bad)/(30-j+1);
             
-            if X(j) < nd_bad
+            if HLP(j) < nd_bad
                bad = bad + 1;
             else
-                if X(j) < fixable
-                    good = good + 1;
+                if HLP(j) < nd_fixable
+                    fixable = fixable + 1;
                 else
                    good = good + 1; 
                 end
             end
             
             if good==7 && fixable==2 && bad==1
-                t = t + 1;
+                event_sum = event_sum + 1;
             end
         end 
     end

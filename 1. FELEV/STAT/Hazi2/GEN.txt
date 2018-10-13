@@ -1,4 +1,4 @@
-PDF - f (P Discrete Function) - Relativ gyakorisag
+PDF - f (Probability Discrete Function) - Relativ gyakorisag
 CDF - F (Cumulative Discrete Function) - eloszlas - csak egy FOR ciklus (SUM(Pi) / SUM(Pi + Integral))
 
 

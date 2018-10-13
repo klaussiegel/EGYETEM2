@@ -1,3 +1,7 @@
+% Oláh Tamás-Lajos
+% otim1750
+% 523 / 2
+
 % -----------
 % Description
 % -----------
@@ -43,8 +47,33 @@ switch (distribution_type)
         % Note that, in this special case, this can be done in a single line of code,
         % provided that one uses the dotted arithmetical operators of MATLAB.
         
-        f = (1.0 / sqrt(2.0 * pi) / sigma) * exp(-(x - mu).^ 2 / 2.0 / sigma^2); 
+        f = (1.0 / sqrt(2.0 * pi) / sigma) * exp(-(x - mu).^ 2 / 2.0 / sigma^2);
+        
+        plot(x,f)
         
     % handle another continuous distribution type
-    ...
+    case 'exponential'
+        % the \varepsilon_x_p(\lambda)-distribution has one parameter (\lambda),
+        % where \lambda > 0
+        lambda = parameters(1);
+        
+        % check \lambda validity
+        if (lambda<=0)
+           error('Lambda must be greater than 0!'); 
+        end
+        
+        % Allocate memory and evaluate the probability density function f_{\varepsilon_x_p(\lambda) 
+        % for each element of the input array \textit{f}\,(x)=\left\{\begin{matrix}\lambda e^{-\lambda x}& ,\:x>0& \\ 0& ,\:x\leq 0\end{matrix}\right.
+        n = length(x);
+        f = zeros(1,n);
+        
+        for i=1:n
+            if (x(i)>0)
+                f(i) = lambda*exp(-1.0*lambda*x(i));
+            else
+                f(i) = 0;
+            end
+        end
+        
+        plot(x,f)
 end

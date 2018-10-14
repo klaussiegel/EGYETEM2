@@ -61,7 +61,7 @@ function f = DiscretePDF(x, distribution_type, parameters)
 
         % handle another discrete distribution type
         case 'poisson'
-            % the Poisson(p)-distribution has a single parameter \lambda,
+            % the Poisson(\lambda)-distribution has a single parameter \lambda,
             % where \lambda > 0
             lambda = parameters(1);
 
@@ -84,4 +84,4 @@ function f = DiscretePDF(x, distribution_type, parameters)
             end
             
             plot(x,f)
-end
+    end

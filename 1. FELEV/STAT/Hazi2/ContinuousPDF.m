@@ -76,4 +76,21 @@ switch (distribution_type)
         end
         
         plot(x,f)
+        
+    case 'plus'
+        lambda = parameters(1);
+        n = length(x);
+        
+        f = zeros(1,n);
+        
+        for i=1:n
+           if (x(i)<0)
+               f(i) = 0;
+           else
+              alfa = ( (lambda*x(i)+x(i)+1)*exp((lambda+1)*(1-x(i)))-(lambda+1)^2 ) / ( (lambda+1)^2 );
+              f(i) = alfa * x(i) * exp((-1*x(i))*(lambda+1));
+           end
+        end
+        plot(x,f)
+        
 end

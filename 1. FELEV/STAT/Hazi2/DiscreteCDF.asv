@@ -39,8 +39,6 @@ function F = DiscreteCDF(x, distribution_type, parameters)
     % CDF_X_(x) = Integral(-\inf -> x)(PDF_X_(u),du)
     switch distribution_type
         case 'geometric'
-            F = integral(@(x)DiscretePDF(x,'geometric',parameters),-999.9,x);
+            F = 
         case 'poisson'
-            F = integral(@(x)DiscretePDF(x,'poisson',parameters),-999.9,x);
-    end
 end

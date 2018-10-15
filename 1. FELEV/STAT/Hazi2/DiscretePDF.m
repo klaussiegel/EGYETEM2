@@ -84,7 +84,7 @@ function f = DiscretePDF(x, distribution_type, parameters)
             
             plot(x,f) 
         case 'hypergeometric'
-            % the hypergeometric(N,M,m)-distribution has three parameters, N ? 1, 0 ? M ? N, 0 ? m ? N 
+            % the hypergeometric(N,M,m)-distribution has three parameters, N > 1, 0 < M < N, 0 < m < N 
             N = parameters(1);
             M = parameters(2);
             m = parameters(3);
@@ -105,7 +105,7 @@ function f = DiscretePDF(x, distribution_type, parameters)
                 if ((x(i) < max(0,m-N+M)) || (x(i) > min(m,M)))
                     error('Incorrect input data !');
                 else
-                    f(i) = nchoosek(M,x(i))*nchoosek(N-M,m-x(i))/nchoosek(N,m);
+                    f(i) = nchoosek(M,x(i))*nchoosek(N-M,m-x(i))/nchoosek(N,m); % nchoosek(n,k) = n! / ( (n–k)! * k! )
                 end
             end            
         case 'pascal'
@@ -128,7 +128,7 @@ function f = DiscretePDF(x, distribution_type, parameters)
                 if (x(i) < 0)
                     error('Incorrect input data !');
                 else
-                    f(i) = nchoosek(N+x(i)-1,x(i))*p^N*(1-p)^x(i);
+                    f(i) = nchoosek(N+x(i)-1,x(i))*p^N*(1-p)^x(i); % nchoosek(n,k) = n! / ( (n–k)! * k! )
                 end
             end
     end

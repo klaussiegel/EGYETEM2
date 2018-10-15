@@ -17,16 +17,16 @@ function [kerek_a , prob1 , prob2] = Lab1_5()
         bool_fine = 0;
         %t = 1; % D
         
-        while bool_fine~=1
+        while ( bool_fine~=1 )
            r = r + 1;
            n = n + 1;
            
            [X] = URealRNG(ini,3,1,6,1);
            X(1) = round(X(1));
            
-           if X(1)==3 || X(1)==5
-                if mod(r,2)~=0
-                   %if t<2 % D
+           if ( X(1)==3 || X(1)==5 )
+                if ( mod(r,2)~=0 )
+                   %if ( t<2 ) % D
                         %t = t + 1; % D
                    %else % D
                         pr1 = pr1 + 1;
@@ -41,7 +41,7 @@ function [kerek_a , prob1 , prob2] = Lab1_5()
         end
     end
     
-    kerek_a = e / loop_v;
-    prob1 = pr1 / loop_v;
-    prob2 = pr2 / loop_v;
+    kerek_a = e / loop_v
+    prob1 = pr1 / loop_v
+    prob2 = pr2 / loop_v
 end

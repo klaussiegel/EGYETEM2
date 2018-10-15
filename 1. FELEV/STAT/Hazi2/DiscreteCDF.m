@@ -1,3 +1,7 @@
+% Oláh Tamás-Lajos
+% otim1750
+% 523 / 2
+
 % -----------
 % Description
 % -----------
@@ -36,11 +40,31 @@
 % geometric distribution i_{min} = 1, while in the case of the Poisson distribution i_{min} = 0}).
 %
 function F = DiscreteCDF(x, distribution_type, parameters)
-    % CDF_X_(x) = Integral(-\inf -> x)(PDF_X_(u),du)
-    switch distribution_type
+
+    f = @(x)DiscretePDF(x, distribution_type, parameters);
+
+    switch(distribution_type)
         case 'geometric'
-            F = integral(@(x)DiscretePDF(x,'geometric',parameters),-999.9,x);
+            x_min=1;    
         case 'poisson'
-            F = integral(@(x)DiscretePDF(x,'poisson',parameters),-999.9,x);
+            x_min = 0;
+        case 'hypergeometric'
+            N = parameters(1);
+            M = parameters(2);
+            m = parameters(3);
+            N = round(N);
+            M = round(M);
+            m = round(m);
+            x_min = max(0,m-N+M);
+        case 'pascal'
+            x_min = 0;
     end
-end
+
+    n=length(x);   
+    F=zeros(1,n);   
+
+    F(1)=sum( f( x_min:x(1) ) );    
+    
+    for i=2:n
+        F(i) = F(i-1)+sum(f(x(i-1)+1:x(i)));
+    end

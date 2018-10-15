@@ -49,8 +49,6 @@ function f = ContinuousPDF(x, distribution_type, parameters)
 
             f = (1.0 / sqrt(2.0 * pi) / sigma) * exp(-(x - mu).^ 2 / 2.0 / sigma^2);
 
-            plot(x,f)
-
         % handle another continuous distribution type
         case 'exponential'
             % the exp(lambda)-distribution has a single parameter, lambda>0
@@ -70,7 +68,6 @@ function f = ContinuousPDF(x, distribution_type, parameters)
                     f(i) = 0;
                 end
             end
-
         case 'uniform'
             %the U([a,b])-distribution has two parameter, a<b, [a,b] is an interval
             a = parameters(1);
@@ -90,7 +87,6 @@ function f = ContinuousPDF(x, distribution_type, parameters)
                     f(i) = 0;
                 end
             end
-
         case 'gamma'
              % the exp(lambda)-distribution has two parameters, a>0 and b>0
             a = parameters(1);

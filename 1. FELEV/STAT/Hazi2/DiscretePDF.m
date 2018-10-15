@@ -32,7 +32,6 @@ function f = DiscretePDF(x, distribution_type, parameters)
 
     % select the corresponding distribution
     switch (distribution_type)
-
         case 'geometric'
             % the Geo(p}-distribution has a single parameter p in (0,1)
             p = parameters(1);
@@ -66,7 +65,7 @@ function f = DiscretePDF(x, distribution_type, parameters)
             lambda = parameters(1);
 
             % check the validity of the distribution parameter p
-            if (lambda <= 0)
+            if (lambda < 0)
                 error('Wrong parameter!');
             end
 
@@ -79,9 +78,57 @@ function f = DiscretePDF(x, distribution_type, parameters)
                 if (x(i)<0)
                     error('Incorrect input data!');
                 else
-                    f(i) = ( (lambda^x(i)) / (factorial(x(i))) ) * exp(-1.0*lambda); % f_{Poisson(\lambda)}(i) = \frac{\lambda^i}{i!}e^{-\lambda},\lambda>0,i=1,2,...,n
+                    f(i) = ( ( lambda^x(i) ) / ( factorial(x(i) ) ) ) * exp(1)^(-lambda);
                 end
             end
             
-            plot(x,f)
+            plot(x,f) 
+        case 'hypergeometric'
+            % the hypergeometric(N,M,m)-distribution has three parameters, N ? 1, 0 ? M ? N, 0 ? m ? N 
+            N = parameters(1);
+            M = parameters(2);
+            m = parameters(3);
+            N = round(N);
+            M = round(M);
+            m = round(m);
+
+            % check the validity of the distribution parameters N,M,m
+            if ((N < 1) || (M < 0) || (M > N) || (m < 0) || (m > N))
+                error('Wrong parameter !');
+            end
+
+            % allocate memory and evaluate the probability density function f_{hyge(p)} 
+            f = zeros(1, n);
+
+            for i=1:n
+                % check the validity of the current value x_i
+                if ((x(i) < max(0,m-N+M)) || (x(i) > min(m,M)))
+                    error('Incorrect input data !');
+                else
+                    f(i) = nchoosek(M,x(i))*nchoosek(N-M,m-x(i))/nchoosek(N,m);
+                end
+            end            
+        case 'pascal'
+            % the pascal(p)-distribution has two parameters: p in (0,1) and N>=1
+            N = parameters(1);
+            p = parameters(2);
+
+            N = round(N);
+
+            % check the validity of the distribution parameters N,p
+            if ((N < 1) || (p <= 0) || (p >= 1))
+                error('Wrong parameter !');
+            end
+
+            % allocate memory and evaluate the probability density function f_{nbin(N,p)} 
+            f = zeros(1,n);
+
+            for i=1:n
+                % check the validity of the current value x_i
+                if (x(i) < 0)
+                    error('Incorrect input data !');
+                else
+                    f(i) = nchoosek(N+x(i)-1,x(i))*p^N*(1-p)^x(i);
+                end
+            end
     end

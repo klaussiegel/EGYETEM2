@@ -15,7 +15,7 @@ function [kerek_a , prob1 , prob2] = Lab1_5()
         e = e + r;
         r = 0;
         bool_fine = 0;
-        %t = 1; % D
+        %t = 1; % Második változathoz kikommentelni
         
         while ( bool_fine~=1 )
            r = r + 1;
@@ -26,12 +26,12 @@ function [kerek_a , prob1 , prob2] = Lab1_5()
            
            if ( X(1)==3 || X(1)==5 )
                 if ( mod(r,2)~=0 )
-                   %if ( t<2 ) % D
-                        %t = t + 1; % D
-                   %else % D
+                   %if ( t<2 ) % Második változathoz kikommentelni
+                        %t = t + 1; % Második változathoz kikommentelni
+                   %else % Második változathoz kikommentelni
                         pr1 = pr1 + 1;
                         bool_fine = 1;
-                   %end % D
+                   %end % Második változathoz kikommentelni
                 else
                     pr2 = pr2 + 1;
                     r = r + 1;

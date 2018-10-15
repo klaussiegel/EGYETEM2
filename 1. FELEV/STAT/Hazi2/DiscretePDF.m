@@ -55,8 +55,6 @@ function f = DiscretePDF(x, distribution_type, parameters)
                     f(i) = q^(x(i) - 1) * p; % i.e., f_{Geo(p)}(x_i) = (1-p)^{x_i} * p, i=1,2,...,n
                 end
             end
-            
-            plot(x,f)
 
         % handle another discrete distribution type
         case 'poisson'
@@ -81,8 +79,7 @@ function f = DiscretePDF(x, distribution_type, parameters)
                     f(i) = ( ( lambda^x(i) ) / ( factorial(x(i) ) ) ) * exp(1)^(-lambda);
                 end
             end
-            
-            plot(x,f) 
+			
         case 'hypergeometric'
             % the hypergeometric(N,M,m)-distribution has three parameters, N > 1, 0 < M < N, 0 < m < N 
             N = parameters(1);
@@ -107,7 +104,8 @@ function f = DiscretePDF(x, distribution_type, parameters)
                 else
                     f(i) = nchoosek(M,x(i))*nchoosek(N-M,m-x(i))/nchoosek(N,m); % nchoosek(n,k) = n! / ( (n–k)! * k! )
                 end
-            end            
+            end   
+			
         case 'pascal'
             % the pascal(p)-distribution has two parameters: p in (0,1) and N>=1
             N = parameters(1);

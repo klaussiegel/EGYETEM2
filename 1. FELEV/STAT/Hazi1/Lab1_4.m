@@ -5,8 +5,6 @@
 function probability = Lab1_4()
     initialization_number = 0;
     event_sum = 0;
-    
-    % hold on;
     loop_value = 10000;
     
     for i = 1:loop_value

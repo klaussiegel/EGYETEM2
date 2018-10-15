@@ -11,7 +11,7 @@ function test
                 plot(x,a,'g.');
                 hold on;
             [b] = DiscreteCDF(x,'geometric',1/3);
-                plot(x,b,'b.');
+                stairs(x,b,'b');
                 title('Geometric')
 
             [c] = geopdf(x,1/3);
@@ -19,7 +19,7 @@ function test
                 plot(x,c,'g.');
                 hold on;
             [d] = geocdf(x,1/3);
-                plot(x,d,'b.');
+                stairs(x,d,'b');
                 title('Geometric (Matlab)')
 
     %Poisson
@@ -30,7 +30,7 @@ function test
                 plot(x,a,'g.');
                 hold on;
             [b] = DiscreteCDF(x,'poisson',1/2);
-                plot(x,b,'b.');
+                stairs(x,b,'b');
                 title('Poisson')
 
             [c] = poisspdf(x,1/2);
@@ -38,7 +38,7 @@ function test
                 plot(x,c,'g.');
                 hold on;
             [d] = poisscdf(x,1/2);
-                plot(x,d,'b.');
+                stairs(x,d,'b');
                 title('Poisson (Matlab)')
 
     %Hypergeometric
@@ -49,7 +49,7 @@ function test
                 plot(x,a,'g.');
                 hold on;
             [b] = DiscreteCDF(x,'hypergeometric',[20,11,10]);
-                plot(x,b,'b.');
+                stairs(x,b,'b');
                 title('Hypergeometric')
 
             [c] = hygepdf(x,20,11,10);
@@ -57,7 +57,7 @@ function test
                 plot(x,c,'g.');
                 hold on;
             [d] = hygecdf(x,20,11,10);
-                plot(x,d,'b.');
+                stairs(x,d,'b');
                 title('Hypergeometric (Matlab)')
 
     %Pascal
@@ -68,7 +68,7 @@ function test
                 plot(x,a,'g.');
                 hold on;
             [b] = DiscreteCDF(x,'pascal',[3,1/2]);
-                plot(x,b,'b.');
+                stairs(x,b,'b');
                 title('Pascal')
 
             [c] = nbinpdf(x,3,1/2);
@@ -76,7 +76,7 @@ function test
                 plot(x,c,'g.');
                 hold on;
             [d] = nbincdf(x,3,1/2);
-                plot(x,d,'b.');
+                stairs(x,d,'b');
                 title('Pascal (Matlab)')
 
     %Normal

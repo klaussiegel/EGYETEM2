@@ -1,0 +1,18 @@
+Add other primary key to existing table:
+	ALTER TABLE <Table_Name>
+	DROP CONSTRAINT <constraint_name>
+
+	ALTER TABLE <Table_Name>
+	ADD CONSTRAINT <constraint_name> PRIMARY KEY (<Column1>,<Column2>)
+
+
++ RENAME CONSTRAINTS
+
+Add Constraint
+	ALTER TABLE Persons
+	ADD PRIMARY KEY (ID);
+
+
+Remove Constraint
+	ALTER TABLE Persons
+	DROP CONSTRAINT PK_Person; 

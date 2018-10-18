@@ -32,33 +32,52 @@
 		- SIGTERM / 15 -> msg + PID -> WAIT -> DIE
 
 
-
-	PARENT
-	|
-	| fork() --- CHILD 1 --> BLOCK SIGINT(2) --> SIGTERM(15) --> UNBLOCK SIGINT(2) --> DIE.
-	|
-	| fork() --- CHILD 2 --> BLOCK SIGINT(2) --> SIGTERM(15) --> print(PID) --> DIE.
-	|
-	| SIGTERM(15) --> print(PID) --> WAIT --> DIE.
-	END
+	PROGRAM MAP:
+	
+		PARENT
+		|
+		| fork() --- CHILD 1 --> BLOCK SIGINT(2) --> SIGTERM(15) --> UNBLOCK SIGINT(2) --> SIGINT(2) --> DIE.
+		|
+		| fork() --- CHILD 2 --> BLOCK SIGINT(2) --> SIGTERM(15) --> print(PID) --> DIE.
+		|
+		| --- SIGTERM(15) --> print(PID) --> WAIT --> DIE.
+		DOOM
 
 */
 
-#include <iostream>
-#include <unistd.h>
-#include <error.h>
-#include <wait.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <signal.h>
+#include <iostream> // IO library
+#include <unistd.h> // UNIX library
+#include <error.h> //UNIX  error-handling library
+#include <wait.h> // UNIX - For process syncing
+#include <stdlib.h> // C Standard Library
+#include <stdio.h> // C standard IO library
+#include <signal.h> // UNIX signal library
+
+
 
 using namespace std;
 
-void sigterm_handler_unlock(int sig) {
+
+
+
+
+// Thanos at work...
+void snap(int) {
+	cout << "\n\t(CHILD 1) EXITING...\n";
+	exit(0);
+}
+
+
+
+
+
+// The chain-breaker
+void sigterm_handler_unlock(int) {
 	// CHILD 1
+	// CREATING SIGSET
 	sigset_t new_mask;
 
-	if ((sigemptyset(&new_mask)==-1) || (sigaddset(&new_mask,SIGINT)==-1)) {
+	if ((sigemptyset(&new_mask)==-1) /* Initializing an empty sigset */ || (sigaddset(&new_mask,SIGINT)==-1) /* Adding SIGINT to the set */) {
 		cout << "\nSIGNAL MASK INIT ERROR!\n";
 		exit(1);
 	}
@@ -69,33 +88,62 @@ void sigterm_handler_unlock(int sig) {
 		exit(1);
 	}
 
-	cout << "\n\t(CHILD 1) SIGINT UNBLOCKED!\nEXITING...\n";
-	exit(0);
+	// Overriding the standard action for SIGINT(2) - dirty fix, but hey, it works... ¯\_(ツ)_/¯
+	signal(SIGINT,&snap);
+
+	cout << "\n\n\t(CHILD 1) SIGINT UNBLOCKED!\n";
+
+	// Waiting for signal
+	while(true) {
+		pause();
+	}
 }
 
-void sigterm_handler_print(int sig) {
+
+
+
+// Print 'n Wait 'n Print 'n DIE
+void sigterm_handler_print(int) {
 	// PARENT
-	cout << "\n\n(PARENT) PID: " << getpid() << "\n";
+	cout << "\n\n(PARENT) PID: " << getpid() << "\n(PARENT) WAITING FOR CHILDREN TO EXIT...\n";
+
+	// Waiting for children - preventing the zombie apocalypse....
 	while(wait(NULL)>0) {}
+
+	cout << "\n\n\n(PARENT) EXITING\n\n";
+
+	// Mass extinction impending....
 	exit(0);
 }
 
-void sigterm_handler_print_exit(int sig) {
+
+
+
+
+// The useless one in the squad...
+void sigterm_handler_print_exit(int) {
 	// CHILD 2
-	cout << "\n\n\t(CHILD 2) PID: " << getpid() << "\n(CHILD 2) EXITING\n\n";
+	cout << "\n\n\t(CHILD 2) PID: " << getpid() << "\n\t(CHILD 2) EXITING\n\n";
 	exit(0);
 }
+
+
+
+
+
 
 int main() {
+
 	cout << "\n\n";
+
+	// FORK ALL THE PROCESSES!
 	pid_t pid1,pid2;
-	struct sigaction newAction1, newAction2, newAction3, oldAction;
-	newAction1.sa_handler = sigterm_handler_unlock;
-	newAction2.sa_handler = sigterm_handler_print;
-	newAction3.sa_handler = sigterm_handler_print_exit;
+
+
+
+	
 
 	// CHILD 1
-		// FORK
 		if ((pid1=fork()) == -1) {
 			cout << "\nFORK ERROR!\n";
 			exit(1);
@@ -103,11 +151,12 @@ int main() {
 
 		if (pid1==0) {
 			// CHILD 1
-			cout << "\n\n\t(CHILD 1) STARTED (UNBLOCK SIGINT - got SIGTERM = unblock SIGINT & die): " << getpid() << "\n";
+			cout << "\n\n\t(CHILD 1) STARTED (got 15 = unblock 2 & wait for 2; got 2 = die): " << getpid() << "\n\n";
 
-			// SIGNAL MASK
+			// SIGNAL SET
 			sigset_t new_mask;
 
+			// Init signal set and add SIGINT(2) to it
 			if ((sigemptyset(&new_mask)==-1) || (sigaddset(&new_mask,SIGINT)==-1)) {
 				cout << "\nSIGNAL MASK INIT ERROR!\n";
 				exit(1);
@@ -120,15 +169,16 @@ int main() {
 			}
 
 			// OVERRIDING SIGTERM(15) ACTION
-			if (sigaction(SIGTERM, &newAction1, &oldAction) < 0) {
-				cout << "\nSIGACTION ERROR!\n";
-				exit(1);
-			}
+			signal(SIGTERM,&sigterm_handler_unlock);
 
+			// Waiting for signal
 			while (true) {
 				pause();
 			}
 		}
+
+
+
 
 
 	// CHILD 2
@@ -139,38 +189,62 @@ int main() {
 
 		if (pid2==0) {
 			// CHILD 2
-			cout << "\n\n\t(CHILD 2) WAITING (SIGTERM - print & die): " << getpid() << "\n";
+			cout << "\n\n\t(CHILD 2) WAITING (15 - print & die): " << getpid() << "\n\n";
 
-			// OVERRIDING SIGTERM(15) ACTION
-			if (sigaction(SIGTERM, &newAction3, &oldAction) < 0) {
-				cout << "\nSIGACTION ERROR!\n";
+			// SIGNAL SET
+			sigset_t new_mask;
+
+			// Init signal set and add SIGINT(2) to it
+			if ((sigemptyset(&new_mask)==-1) || (sigaddset(&new_mask,SIGINT)==-1)) {
+				cout << "\nSIGNAL MASK INIT ERROR!\n";
 				exit(1);
 			}
 
-			sigaction(SIGTERM, &newAction3, &oldAction);
+			// BLOCKING SIGINT(2)
+			if (sigprocmask(SIG_BLOCK,&new_mask,NULL) == -1) {
+				cout << "\nSIGNAL BLOCKING ERROR!\n";
+				exit(1);
+			}
 
+			// OVERRIDING SIGTERM(15) ACTION
+			signal(SIGTERM,&sigterm_handler_print_exit);
+
+			// Wait for signal
 			while (true) {
 				pause();
 			}
 		}
 
 
-	cout << "\n\n\t(PARENT) WAITING (SIGTERM - print & wait & die): " << getpid() << "\n";
+
+
+
 
 	// PARENT
-		// OVERRIDING SIGTERM(15) ACTION
-		if (sigaction(SIGTERM, &newAction2, &oldAction) < 0) {
-			cout << "\nSIGACTION ERROR!\n";
+		cout << "\n\n\t(PARENT) WAITING (15 - print & wait & die): " << getpid() << "\n\n";
+		
+		// SIGNAL SET
+		sigset_t new_mask;
+
+		// Init signal set and add SIGINT(2) to it
+		if ((sigemptyset(&new_mask)==-1) || (sigaddset(&new_mask,SIGINT)==-1)) {
+			cout << "\nSIGNAL MASK INIT ERROR!\n";
 			exit(1);
 		}
 
-		sigaction(SIGTERM, &newAction2, &oldAction);
+		// BLOCKING SIGINT(2)
+		if (sigprocmask(SIG_BLOCK,&new_mask,NULL) == -1) {
+			cout << "\nSIGNAL BLOCKING ERROR!\n";
+			exit(1);
+		}
+		
+		// OVERRIDING SIGTERM(15) ACTION
+		signal(SIGTERM,&sigterm_handler_print);
 
+		// Waiting for signal
 		while (true) {
 			pause();
 		}
-
-		cout << "\n\nDONE\n\n";
 
 	return 0;
 }

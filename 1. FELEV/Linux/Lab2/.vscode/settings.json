@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.pr": "prolog",
+        "iostream": "cpp"
+    }
+}

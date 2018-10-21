@@ -106,5 +106,40 @@ function f = ContinuousPDF(x, distribution_type, parameters)
                     f(i) = 0;
                 end
             end
+        
+        case 'mine'
+            % two parameters: a>0 , b>0
+            a = parameters(1);
+            b = parameters(2);
+            
+            % check the validity of the distribution parameters
+            if ((a <= 0) || (b <= 0))
+                error('Wrong parameter !');
+            end
+            
+            f = zeros(1, n);
 
+            for i=1:n
+                if (x(i) > 0)
+                    f(i) = 1.0-exp(-(x(i)/a)^b);
+                else
+                    f(i) = 0;
+                end
+            end
+            
+        case 'pearson'
+            n = parameters(1);
+            sigma = parameters(2);
+            
+            if ((n<1) || (sigma<=0))
+                error('Wrong parameter !');
+            end
+            
+            for i=1:n
+               if (x(i) > 0)
+                  f(i) = (x^(n/2 - 1) * exp(-(x/(2*sigma^2))))/(2^(n/2) * sigma^n * ) 
+               else
+                   
+               end
+            end
     end

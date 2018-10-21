@@ -55,6 +55,9 @@ function F = ContinuousCDF(x, distribution_type, parameters)
 
         case 'gamma'
             x_min = x(1)-10^6;
+            
+        case 'mine'
+            x_min = x(1)-10^6;
     end
     
     n = length(x);

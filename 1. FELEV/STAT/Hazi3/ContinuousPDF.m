@@ -128,18 +128,20 @@ function f = ContinuousPDF(x, distribution_type, parameters)
             end
             
         case 'pearson'
-            n = parameters(1);
+            nn = parameters(1);
             sigma = parameters(2);
             
-            if ((n<1) || (sigma<=0))
+            if ((nn<1) || (sigma<=0))
                 error('Wrong parameter !');
             end
             
+            f = zeros(1,n);
+            
             for i=1:n
                if (x(i) > 0)
-                  f(i) = (x^(n/2 - 1) * exp(-(x/(2*sigma^2))))/(2^(n/2) * sigma^n * ) 
+                   f(i) = ( x(i)^(nn/2 - 1) * exp(-(x(i)/(2*sigma^2))))/(2^(nn/2) * sigma^nn * gamma(nn/2));
                else
-                   
+                   f(i) = 0;
                end
             end
     end

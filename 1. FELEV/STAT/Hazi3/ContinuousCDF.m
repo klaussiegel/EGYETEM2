@@ -58,6 +58,9 @@ function F = ContinuousCDF(x, distribution_type, parameters)
             
         case 'mine'
             x_min = x(1)-10^6;
+            
+        case 'pearson'
+            x_min = x(1)-10^6;
     end
     
     n = length(x);

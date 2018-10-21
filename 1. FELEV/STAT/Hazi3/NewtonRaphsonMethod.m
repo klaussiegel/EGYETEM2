@@ -1,4 +1,4 @@
-function X = NewtonRaphsonMethod(distribution_type,n,delta)
+function X = NewtonRaphsonMethod(n,delta)
     if (n<1)
         error("N must be >=1 !")
     end
@@ -7,15 +7,17 @@ function X = NewtonRaphsonMethod(distribution_type,n,delta)
         error("delta must be >0")
     end
     
-    X = zeros(1,n);
-    F = @(x)ContinuousCDF()
-    
+%     X = zeros(1,n);
+    F = @(x)ContinuousCDF(x,'pearson',[3,1]);
+    f = @(x)ContinuousPDF(x,'pearson',[3,1]);
+    X = URealRNG(5,'URNG1',0.1,5,n);
     
     for i=1:n
-       U = ULEcuyerRNG;
-       Xinv = URealRNG(5,'URNG1',[1,10],1);
+       U = ULEcuyerRNG;       
        
-       while abs(F())
-           
+       X(i) = X(i)-( ( F(X(i)) - U ) / ( f(X(i)) ) );
+       
+       while (abs(F(X(i))-U)<=delta)
+           X(i) = X(i)-( ( F(X(i)) - U ) / ( f(X(i)) ) );
        end
     end

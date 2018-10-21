@@ -28,6 +28,4 @@ function [X, new_init_val] = URNG2(init_val, n)
     c = 0;
     
     [X, new_init_val] = LinearCongruentialGenerator(m,a,c, init_val, n);
-    
-    hist(X);
 end

@@ -130,7 +130,4 @@ function X = ExactInversion(distribution_type, parameters, n)
                 X(i) = XFxU(U);
             end
 
-            hist(X)
-
-
     end

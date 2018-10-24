@@ -184,11 +184,14 @@ lista_actress(L) :-
 
 bejar([],[]).
 
-bejar([[_,_]|Com],Rest) :-
-    bejar(Com,Rest).
+bejar([_|T1],T2) :-
+    bejar(T1,T2).
 
-bejar([[A,1]|Com],[A|Rest]) :-
-    bejar(Com,Rest).
+bejar([[A,1]|T1],[A|T2]) :-
+    bejar(T1,T2).
+
+bejar([[A,1]|T],[A])  :-
+    bejar(T,[A]).
 
 egyszer(Out,Out_L) :-
     lista_actor(LM),
@@ -198,6 +201,7 @@ egyszer(Out,Out_L) :-
     kompakt(LNS,LC),
     bejar(LC,Out),
     length(Out,Out_L).
+
 
 %   b.) Keressük meg azon színészeket (actor vagy actress),
 %       akik pontosan két filmben játszanak.
@@ -216,7 +220,7 @@ ketszer(Out,Out_L) :-
     append(LM, LF, LN),
     sort(LN, LNS),
     kompakt(LNS,LC),
-    bejar(LC,Out),
+    bejar2(LC,Out),
     length(Out,Out_L).
 
 

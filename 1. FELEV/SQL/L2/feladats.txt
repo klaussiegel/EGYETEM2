@@ -1,0 +1,17 @@
+ALTER TABLE utasitassal vegezzuk el a kovetkezo muveleteket!
+
+-- 1. A Berlok tablaba szurjuk be a BerloID mezot, mely legyen automatikusan sorszamozhato es a Berlok tabla elsodleges kulcsa. A sorszamozas 1-tol kezdodjon es az ertekek harmasaval novekedjenek (1, 4, 7, stb.).
+-- 2. Toroljuk az Utca es Hazszam oszlopokat a Berlok tablabol!
+-- 3. Szurjunk be egy Cim oszlopot a Berlok tablaba!
+-- 4. Modositsuk az Autok tabla Csillag mezojet oly modon, hogy erteke 1 es 5 kozotti lehessen!
+-- 5. Szurjuk be a Berlok tablaba egy SzulDatum nevu oszlopot, melynek alapertelmezes szerinti erteke legyen: 1990. januar 1!
+
+-- Szurjunk be minden tablaba legalabb 5 sort!
+
+Lekerdezeseket (SELECT utasitasokat) hasznalva:
+
+-- 1. Kerdezzuk le a Tipusok tabla tartalmat!
+-- 2. Adjuk meg az elso ot berlot (nev, helyseg, szuletesi datum) az adatbazisbol!
+-- 3. Adjuk meg a 'kolozsvari' berlok kozul azokat, akik a 'Kogalniceanu' utcan laknak!
+-- 4. Adjuk meg azon berlok nevet, akiknek a neve ‘A’ betuvel kezdodik es a masodik felevben (juliustol decemberig) szulettek!
+-- 5. Adjuk meg azon autok rendszamat, melyek 2-es vagy 4-es csillaggal rendelkeznek!

@@ -60,11 +60,16 @@ invertal([A|B],L) :-
 %       torolk([1,2,3,4,5,6,7,8],2,[1,3,5,7])
 % predikátum.
 
-torolk(In,K,Out) :-
-    same_length(In,[_|Out]),
-    append(Pre,[_|Suf],In),
-    length([_|Pre],K),
-    append(Pre,Suf,Out).
+% torolk(In,K,Out) :-
+%    same_length(In,[_|Out]),
+%    append(Pre,[_|Suf],In),
+%    length([_|Pre],K),
+%    append(Pre,Suf,Out).
+
+delete_nth(L,C,R) :-
+    findall(E, (nth1(I,L,E),I mod C =\= 0), R).
+delete_nth(L,0,L).
+
 
 % 7. Teszteljük, hogy egy lista lehet-e permutációja az
 % [1..N] közötti számoknak, ahol N a lista hossza:

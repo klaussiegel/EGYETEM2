@@ -19,11 +19,10 @@ function X = ExactInversion(distribution_type, parameters, n)
 
             % fx = @(x)(lambda*exp(-lambda*x));
             % Fx = @(x)(1-exp(-lambda*x));
-            XFxU = @(U)(-(1/lambda)*log(U));
 
             for i=1:n
                 U = ULEcuyerRNG;
-                X(i) = XFxU(U);
+                X(i) = -(1/lambda)*log(U);
             end
 
         case 'cauchy'
@@ -36,11 +35,10 @@ function X = ExactInversion(distribution_type, parameters, n)
 
             % fx = @(x)(sigma/(pi*(x^2+sigma^2)));
             % Fx = @(x)(1/2 + 1/pi * arctan(x/sigma));
-            XFxU = @(U)(sigma*tan(pi*U));
 
             for i=1:n
                 U = ULEcuyerRNG;
-                X(i) = XFxU(U);
+                X(i) = sigma*tan(pi*U);
             end
 
         case 'rayleigh'
@@ -53,11 +51,10 @@ function X = ExactInversion(distribution_type, parameters, n)
 
             % fx = @(x)((x/sigma^2)*exp((a^2-x^2)/2));
             % Fx = @(x)(1-exp(-((x^2)/(x*sigma^2))));
-            XFxU = @(U)(sigma*sqrt(-2*log(U)));
 
             for i=1:n
                 U = ULEcuyerRNG;
-                X(i) = XFxU(U);
+                X(i) = sigma*sqrt(-2*log(U));
             end
 
         case 'triangular'
@@ -70,11 +67,10 @@ function X = ExactInversion(distribution_type, parameters, n)
 
             % fx = @(x)((2/a)*(1-(x/a)));
             % Fx = @(x)((x/a)*(x-((x^2)/2*a)));
-            XFxU = @(U)(a*(1-sqrt(U)));
 
             for i=1:n
                 U = ULEcuyerRNG;
-                X(i) = XFxU(U);
+                X(i) = a*(1-sqrt(U));
             end
 
         case 'rayleigh-end'
@@ -87,11 +83,10 @@ function X = ExactInversion(distribution_type, parameters, n)
 
             % fx = @(x)(x*exp((a^2 - x^2)/2));
             % Fx = @(x)(1 - exp((a^2 - x^2)/2));
-            XFxU = @(U)(sqrt(a^2 - 2*log(U)));
 
             for i=1:n
                 U = ULEcuyerRNG;
-                X(i) = XFxU(U);
+                X(i) = sqrt(a^2 - 2*log(U));
             end
 
         case 'pareto'
@@ -125,10 +120,10 @@ function X = ExactInversion(distribution_type, parameters, n)
 
             for i=1:n
                 U = ULEcuyerRNG;
-                if (U<=0)
+                if (U<0)
                     X(i) = 0;
                 else
-                    X(i) = sqrt(log(1/(1-U)^(-(a/b))));
+                    X(i) = sqrt(abs(log(1/(1-U)^(-(a/b)))));
                 end
             end
 

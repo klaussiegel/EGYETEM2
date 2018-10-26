@@ -72,17 +72,16 @@ for k = 1:count
     b = 1;
     j = column_count;
 
-    while (j-b==1)
+    while (j-b~=1)
         m = floor((b+j)/2);
 
         if (u == cumulative_probabilities(m))
-            b = m; j = m;
-        else
-            if (u > cumulative_probabilities(m))
+            b = m;
+            j = m;
+        elseif (u > cumulative_probabilities(m))
                 b = m;
-            else
+        else
                 j = m;
-            end
         end
     end
 

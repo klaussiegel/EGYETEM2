@@ -26,18 +26,19 @@ function [] = test()
     figure;
 %     plot(x, @(x)ContinuousPDF(x, 'mine', [1,2]));
 %     plot(x, @(x)ContinuousCDF(x, 'mine', [1,2]));
-    hist(ExactInversion('mine', [1, 2], 1000), 30);
+    hist(ExactInversion('mine', [1, 2], 1000));
+    title('az a masik...')
 
     figure;
     hist(BisectionMethod('normal', [2, 5], 0.01, -5, 10, 1000), 30);
     title('felezo modszer');
 
     figure;
-    hist(StringMethod(1000,0.01), 30);
+    hist(StringMethod('normal',[2,5],-5,10,0.01,1000), 30);
     title('hur modszer');
 
     figure;
-    hist(NewtonRaphsonMethod(1000 , 0.01), 30);
+    hist(NewtonRaphsonMethod('pearson', [3,1], 0.1, 5, 0.01, 1000), 30);
     title('Newton-Raphson modszer');
 
     figure;
@@ -48,5 +49,5 @@ function [] = test()
     hist(NyolcadikAlgo(1/2, 10000), 30);
     title('geometriai');
 
-    Feladat5()
+    Feladat5(1000,1)
 end

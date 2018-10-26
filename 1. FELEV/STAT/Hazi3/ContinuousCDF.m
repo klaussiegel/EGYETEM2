@@ -60,13 +60,13 @@ function F = ContinuousCDF(x, distribution_type, parameters)
             x_min = x(1)-10^6;
 
         case 'pearson'
-            x_min = x(1)-10^6;
+            x_min = -Inf;
     end
 
     n = length(x);
     F = zeros(1,n);
-    F(1) = quad(f, x_min, x(1));
+    F(1) = integral(f, x_min, x(1));
 
     for i=2:n
-        F(i) = F(i-1)+ i integral(f, x(i-1), x(i));
+        F(i) = F(i-1) + integral(f, x(i-1), x(i));
     end

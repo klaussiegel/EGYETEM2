@@ -25,6 +25,7 @@ function f = ContinuousPDF(x, distribution_type, parameters)
 
     % for safety reasons
     x = sort(x);
+    x = round(x);
 
     % get the size of the input array
     n = length(x);

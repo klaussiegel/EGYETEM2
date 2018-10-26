@@ -40,35 +40,26 @@ osszead([A|T],Ans) :-
     Ans is AAns + A.
 
 % 4. Generáljuk a számok listáját 'a' és 'b' között.
-general(A,A,[A|_]).
-general(A,B,L) :-
-    BB is B-1,
-    general(A,BB,LL),
-    append(LL, [B], L).
+general(A,A,[A]):-!.
+general(A,B,[A|T]) :-
+    AA is A+1,
+    general(AA,B,T).
 
 % 5. Invertáljunk egy listát.
 % Használjuk a lista-invertálást az 1-18000
 % lista inverzének a kiszámítására.
 
-invertal([A],[A]).
-invertal([A|B],L) :-
-    invertal(B,LL),
-    append(LL,[A],L).
+invertal([],Z,Z).
+invertal([A|B],Z,Acc) :- invertal(B,Z,[A|Acc]).
 
 % 6. Töröljük egy lista minden K-adik elemét,
 % azaz legyen igaz a
 %       torolk([1,2,3,4,5,6,7,8],2,[1,3,5,7])
 % predikátum.
 
-% torolk(In,K,Out) :-
-%    same_length(In,[_|Out]),
-%    append(Pre,[_|Suf],In),
-%    length([_|Pre],K),
-%    append(Pre,Suf,Out).
-
-delete_nth(L,C,R) :-
+torolk(L,C,R) :-
     findall(E, (nth1(I,L,E),I mod C =\= 0), R).
-delete_nth(L,0,L).
+torolk(L,0,L).
 
 
 % 7. Teszteljük, hogy egy lista lehet-e permutációja az
@@ -120,9 +111,16 @@ osszecsuk([[X,A1],[Y,A2]|T],[[X,A1]|Out]) :-
     X \= Y,
     osszecsuk([[Y,A2]|T],Out).
 
+vegig([],[]):-!.
+% vegig([[A,1]],[A]).
+% vegig([[A,B]],[[A,B]]).
+vegig([[A,B]|T],[[A,B]|T1]) :- B\=1, vegig(T,T1).
+vegig([[A,1]|T],[A|T1]) :- vegig(T,T1).
+
 kompakt(L,Out) :-
     felsorol(L,X),
-    osszecsuk(X,Out).
+    osszecsuk(X,Out1),
+    vegig(Out1,Out).
 
 
 % 9. Tekintsük az alábbi logikai feladatot:
@@ -181,53 +179,32 @@ megold(L) :-
 %   a.) Keressük meg azon színészeket (actor vagy actress),
 %       akik csak egy filmben játszanak.
 
-lista_actor(L) :-
-    findall(LL, actor(_,LL,_), L).
+count(L,Out) :-
+    findall(L,(actor(_,L,_) ; actress(_,L,_)),Out).
 
-lista_actress(L) :-
-    findall(LL, actress(_,LL,_), L).
+is_act(L) :-
+    actor(_,L,_).
 
-bejar([],[]).
+is_act(L) :-
+    actress(_,L,_).
 
-bejar([_|T1],T2) :-
-    bejar(T1,T2).
-
-bejar([[A,1]|T1],[A|T2]) :-
-    bejar(T1,T2).
-
-bejar([[A,1]|T],[A])  :-
-    bejar(T,[A]).
-
-egyszer(Out,Out_L) :-
-    lista_actor(LM),
-    lista_actress(LF),
-    append(LM, LF, LN),
-    sort(LN, LNS),
-    kompakt(LNS,LC),
-    bejar(LC,Out),
-    length(Out,Out_L).
-
+egyfilm(L) :-
+    is_act(L),
+    count(L,C),
+    length(C,Cl),
+    Cl = 1.
 
 %   b.) Keressük meg azon színészeket (actor vagy actress),
 %       akik pontosan két filmben játszanak.
 
-bejar2([],[]).
-
-bejar2([[_,_]|Com],Rest) :-
-    bejar2(Com,Rest).
-
-bejar2([[A,2]|Com],[A|Rest]) :-
-    bejar2(Com,Rest).
-
-ketszer(Out,Out_L) :-
-    lista_actor(LM),
-    lista_actress(LF),
-    append(LM, LF, LN),
-    sort(LN, LNS),
-    kompakt(LNS,LC),
-    bejar2(LC,Out),
-    length(Out,Out_L).
+ketfilm(L) :-
+    is_act(L),
+    count(L,C),
+    length(C,Cl),
+    Cl = 2.
 
 
 %   c.) az adatbázisban találunk színészeket,
 %       akik nem játszottak egy filmben sem?
+
+% NINCS EGY SEM.

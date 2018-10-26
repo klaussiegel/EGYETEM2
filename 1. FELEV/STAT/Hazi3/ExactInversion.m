@@ -105,11 +105,10 @@ function X = ExactInversion(distribution_type, parameters, n)
 
             % fx = @(x)((a*(b^a))/(x^(a+1)));
             % Fx = @(x)(1-(b/x)^a);
-            XFxU = @(U)(b/(U^(1/a)));
 
             for i=1:n
                 U = ULEcuyerRNG;
-                X(i) = XFxU(U);
+                X(i) = b/(U^(1/a));
             end
 
         case 'mine'
@@ -123,11 +122,14 @@ function X = ExactInversion(distribution_type, parameters, n)
 
             % Fx = @(x)piecewise(x<=0,0,x>0,1-exp(-(x/a)^b));
             % fx = @(x)piecewise(x<=0,0,x>0,((b/a)*((x/a)^(b-1))*(exp(-(x/a)^b))));
-            XFxU = @(x)((x<=0)*0+(x>0)*sqrt(log(1/(1-x)^(-(a/b)))));
 
             for i=1:n
                 U = ULEcuyerRNG;
-                X(i) = XFxU(U);
+                if (U<=0)
+                    X(i) = 0;
+                else
+                    X(i) = sqrt(log(1/(1-U)^(-(a/b))));
+                end
             end
 
     end

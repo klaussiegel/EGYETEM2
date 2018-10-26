@@ -11,9 +11,11 @@ function X = NewtonRaphsonMethod(n,delta)
     F = @(x)ContinuousCDF(x,'pearson',[3,1]);
     f = @(x)ContinuousPDF(x,'pearson',[3,1]);
     % X = URealRNG(5,'URNG1',0.1,5,n);
+    a = 3;
+    b = 1;
 
     for i=1:n
-        U = ULEcuyerRNG();
+        U = ULEcuyerRNG() * (F(b) - F(a)) + F(a);
         X(i) = U;
 
         X(i) = X(i)-( ( F(X(i)) - U ) / ( f(X(i)) ) );
@@ -24,3 +26,4 @@ function X = NewtonRaphsonMethod(n,delta)
     end
 
     hist(X);
+end

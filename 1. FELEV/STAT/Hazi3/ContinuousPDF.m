@@ -88,7 +88,7 @@ function f = ContinuousPDF(x, distribution_type, parameters)
                 end
             end
         case 'gamma'
-             % the exp(lambda)-distribution has two parameters, a>0 and b>0
+            % the exp(lambda)-distribution has two parameters, a>0 and b>0
             a = parameters(1);
             b = parameters(2);
 

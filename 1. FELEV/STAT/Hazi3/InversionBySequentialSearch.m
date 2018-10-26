@@ -68,11 +68,29 @@ for k = 1:count
         otherwise
             u = rand();
     end
-   % u=U(k);
-    i = 1;
-    while (u > cumulative_probabilities(i))
-        i = i + 1;
+
+    b = 1;
+    j = column_count;
+
+    while (j-b==1)
+        m = floor((b+j)/2);
+
+        if (u == cumulative_probabilities(m))
+            b = m; j = m;
+        else
+            if (u > cumulative_probabilities(m))
+                b = m;
+            else
+                j = m;
+            end
+        end
     end
 
-    sample(k) = X(1, i);
+    if (cumulative_probabilities(b) > u)
+        index = b;
+    else
+        index = j;
+    end
+
+    sample(k) = X(1, index);
 end

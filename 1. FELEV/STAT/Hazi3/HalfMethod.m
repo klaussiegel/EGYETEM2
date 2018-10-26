@@ -16,24 +16,26 @@ function X = HalfMethod(n,delta)
     b = 0;
 
     for i=1:n
-        U = ULEcuyerRNG;
+        aa = a;
+        bb = b;
+        U = ULEcuyerRNG * (F(bb) - F(aa)) + F(aa);
 
         % SIMULATING DO...WHILE LOOP
-            X(i)=(a+b)/2;
+            X(i)=(aa+bb)/2;
 
-            if (F(X(i))<=U)
-                a = X(i);
+            if (F(X(i))<U)
+                aa = X(i);
             else
-                b = X(i);
+                bb = X(i);
             end
 
             while (b-a<=2*delta)
-                X(i)=(a+b)/2;
+                X(i)=(aa+bb)/2;
 
                 if (F(X(i))<=U)
-                    a = X(i);
+                    aa = X(i);
                 else
-                    b = X(i);
+                    bb = X(i);
                 end
             end
     end

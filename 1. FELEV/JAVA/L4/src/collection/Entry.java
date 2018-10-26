@@ -11,7 +11,7 @@ public class Entry {
     private Car value;
     private Entry next;
 
-    public Entry(int key, Car value, Entry next) {
+    public Entry(int key, Car value) {
         this.key = key;
         this.value = value;
         this.next = next;

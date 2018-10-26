@@ -1,6 +1,6 @@
 function X = StringMethod(n, delta)
     % Validating arguments
-    if (n<1)
+    if (n < 1)
         error("N has to be >=1 !")
     end
 
@@ -12,25 +12,28 @@ function X = StringMethod(n, delta)
     F = @(x)ContinuousCDF(x, 'normal', [14,5]);
 
     for i=1:n
-        U = ULEcuyerRNG();
         a = -5;
         b = 10;
+        aa = a;
+        bb = b;
+        U = ULEcuyerRNG() * (F(bb) - F(aa)) + F(aa);
 
-        X(i) = a + (b-a)*((U-F(a))/(F(b)-F(a)));
+        X(i) = a + (bb-aa)*((U-F(aa))/(F(bb)-F(aa)));
 
         if (F(X(i))<U)
-            b = X(i);
+            bb = X(i);
         else
-            a = X(i);
-        end;
+            aa = X(i);
+        end
 
         while (abs(b-a)>delta)
-            X(i) = a + (b-a)*((U-F(a))/(F(b)-F(a)));
+            X(i) = aa + (bb-aa)*((U-F(aa))/(F(bb)-F(aa)));
 
             if (F(X(i))<U)
-                b = X(i);
+                bb = X(i);
             else
-                a = X(i);
-            end;
-        end;
-    end;
+                aa = X(i);
+            end
+        end
+    end
+end

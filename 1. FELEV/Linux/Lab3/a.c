@@ -14,21 +14,7 @@
 # include <sys/types.h>
 # include <sys/ipc.h>
 # include <sys/shm.h>
-# include <sys/random.h>
-
-
-
-#define TABLE_SIZE_1D 9
-#define TABLE_SIZE_2D 3
-
-
-
-
-typedef struct { int i; int j; } index;
-
-index arr_to_mat (int x) { index out; out.i = x/3; out.j = x%3; return out; }
-
-int mat_to_arr (index x) { return x.i*3+x.j; } 
+# include "comm.h"
 
 void error() {
 	printf("\n\nERROR!\n\n");
@@ -41,27 +27,28 @@ void usage() {
 
 
 int main() {
-	int shmid;
-	key_t key;
-	int* shm;
-	getrandom(&key,sizeof(int),0);
-	FILE* f = fopen("key.priv","w");
-	fprintf(f,"%d",key);
-	// printf("\n\nRandom number = %d\n\n",key);
+	// int shmid;
+	// int* shm;
+	// int game[3][3];
+// 
+	// zero(game);
 
-	shmid = shmget(key,sizeof(int)*TABLE_SIZE_1D,IPC_CREAT | 0666);	
+	help();
+	// printf("\n\nTHE KEY IS: %d\n\n",key);
 
-	if (shmid < 0) error();
-
-	shm = shmat(shmid,NULL,0);
-
-	if (shm == (int*) -1) error();
+	// shmid = shmget(key,MSG_SIZE,IPC_CREAT | 0666);
+// 
+	// if (shmid < 0) error();
+// 
+	// shm = shmat(shmid,NULL,0);
+// 
+	// if (shm == (int*) -1) error();
 	
 	// MEMORY MANIPULATION
 
+	
+
 	// WHILE-TERMINATION
 
-	fclose(f);
-	system("rm ./key.priv");
 	return 0;
 }

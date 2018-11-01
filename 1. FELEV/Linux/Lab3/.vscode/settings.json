@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.pr": "prolog",
+        "system_error": "cpp"
+    }
+}

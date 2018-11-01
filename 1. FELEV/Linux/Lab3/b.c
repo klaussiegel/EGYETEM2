@@ -10,8 +10,8 @@
 
 # include <wait.h>
 # include <stdio.h>
-# include <error.h>
 # include <fcntl.h>
+# include <error.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <string.h>
@@ -44,31 +44,32 @@ void playit(int xyz) {
 	if (checkwin(game,1)!=1 && checkwin(game,-1)!=1) {
 		// NOT A WIN
 		message out;
+        print_curr(game);
 		help();
 		printf("\n\nPlease enter desired move!\n");
 		int position = 0;
 		scanf("\npoz = %d",&position);
 		out.poz = arr_to_mat(position);
-		out.c = 'X';
+		out.c = '0';
 
 		// SEND MESSAGE
 		*shm = out;
 		change(game,out);
 
-		if (checkwin(game,1)==1) {
-			win('X');
-			kill(inst_shm->pid2,SIGTERM);
-			exit(0);
+
+		if (checkwin(game,-1)==1) {
+			win('0');
+			kill(inst_shm->pid1,SIGTERM);
+            exit(0);
 		}
 
-		kill(inst_shm->pid2,SIGPWR);
-
+        kill(inst_shm->pid1,SIGPWR);
 	} else {
 		// WIN
-		if (checkwin(game,1)==1) win('X');
-		else win('0');
+		if (checkwin(game,-1)==1) win('0');
+		else win('X');
 
-		kill(inst_shm->pid2,SIGTERM);
+		kill(inst_shm->pid1,SIGTERM);
 
 		exit(0);
 	}
@@ -78,7 +79,7 @@ void playit(int xyz) {
 
 
 
-int main() { // 1 / X
+int main() { // -1 / 0
 	// CREATE SHM
 		// int shmid = shmget(1234,sizeof(int),IPC_CREAT|0666);
 		// int* shm;
@@ -88,42 +89,36 @@ int main() { // 1 / X
 
 	// inst_shmid = shmget(num_key,sizeof(instance),IPC_CREAT|0666);
 
-	// if (inst_shmid == -1) {
+    // if (inst_shmid == -1) {
 	// 	print_error("INST_SHMID ERROR");
 	// }
 
-	// inst_shm = (instance*) shmat(inst_shmid,0,0);
-	int i_shm = open_inst_shm();
+    int i_shm = open_inst_shm();
 	inst_shm = (instance*)create_shared_memory(sizeof(instance),i_shm);
 
+	// inst_shm = (instance*) shmat(inst_shmid,0,0);
 
-	// if (inst_shm == (instance*) -1) {
+    // if (inst_shm == (instance*) -1) {
 	// 	print_error("INSTANCE ERROR");
 	// }
 
-	inst_shm->inst = 1;
-	inst_shm->pid2 = 0;
-
-
-	if (inst_shm->inst==2) print_error("Too many instances");
-
+	if (inst_shm->inst == 2) print_error("Too many instances");
 
 	// SHM FOR COMMUNICATION
-	// shmid = shmget(key,sizeof(message),IPC_CREAT|0666);
+	// shmid = shmget(key,sizeof(message),0666);
 
 	// if (shmid == -1) {
 	// 	print_error("INST_SHMID ERROR");
 	// }
 
 	// shm = (message*) shmat(shmid,0,0);
-	int main_shm = open_main_shm();
+
+    int main_shm = open_main_shm();
 	shm = (message*)create_shared_memory(sizeof(message),main_shm);
 
 	// if (shm == (message*) -1) {
 	// 	print_error("ATTACH ERROR");
 	// }
-
-
 
 	// CREATE GAME TABLE
 	zero(game);
@@ -132,35 +127,13 @@ int main() { // 1 / X
 
 	signal(SIGPWR,&playit);
 
-		// SIGNAL OTHER
+    inst_shm->pid2 = getpid();
+    inst_shm->inst++;
 
-			// INITIAL MOVE
-			message out;
-			help();
-			printf("\n\nPlease enter desired move!\n");
-			int position;
-			scanf("%d",&position);
-			printf("\n\nPOSITION: %d\n\n",position);
-			out.poz = arr_to_mat(position);
-			out.c = 'X';
+    // printf("\n\nPID: %d\n\n",getpid());
+    // pr_inst(*inst_shm);
 
-			// pr_msg(out);
-
-			// SEND MESSAGE
-			*shm = out;
-			change(game,out);
-
-			print_curr(game);
-
-			printf("\n\nPID: %d\n\n",getpid());
-
-			// while (inst_shm->pid2==0) {pause();}
-
-			// pr_inst(*inst_shm);
-
-			kill(inst_shm->pid2,SIGPWR);
-
-		pause();
+    pause();
 
 	return 0;
 }

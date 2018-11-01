@@ -10,15 +10,15 @@ function X = NewtonRaphsonMethod(dist_type, params, a, b, eps, n)
     X = zeros(1,n);
     F = @(x)ContinuousCDF(x,dist_type,params);
     f = @(x)ContinuousPDF(x,dist_type,params);
-    % X = URealRNG(5,'URNG1',0.1,5,n);
+
     init = 3;
     stop = 1000;
 
     for i=1:n
         seged = init;
-        U = ULEcuyerRNG() * (F(b) - F(a)) + F(a);
+        U = UMersenneTwisterRNG() * (F(b) - F(a)) + F(a);
         
-        while (1)
+        while (true)
             ctrl = 0;
             X(i) = seged;
 

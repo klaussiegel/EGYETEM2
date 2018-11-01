@@ -10,10 +10,12 @@
 #define MSG_SIZE sizeof(message)
 
 key_t key = 735508382;
+key_t num_key = 264257534;
+key_t sync_key = 31337;
 
-typedef struct { int i; int j; } index;
+typedef struct { int i; int j; } indd;
 
-typedef struct { index poz; char c; } message;
+typedef struct { indd poz; char c; } message;
 
 void zero(int game[3][3]) {
 	int i,j;
@@ -24,9 +26,32 @@ void zero(int game[3][3]) {
 	}
 }
 
+void win(char c) {
+	printf("\n\n\n\n\n\n\nWINNER WINNER CHICKEN DINNER!\n %c WON!\n\n\n",c);
+	exit(0);
+}
+
+int valid(message x) {
+	if (x.poz.i<0 || x.poz.i>2) return 0;
+	if (x.poz.j<0 || x.poz.j>2) return 0;
+	if (x.c!='X' || x.c!='O' || x.c!='0') return 0;
+	return 1;
+}
+
 void help() {
 	printf("\n\nINDEX HELPER:\n\n");
 	printf("\t 0 | 1 | 2\n\t-----------\n\t 3 | 4 | 5\n\t-----------\n\t 6 | 7 | 8\n\n");
+}
+
+char tochar(int x) {
+	if (x==0) return ' ';
+	if (x==1) return 'X';
+	if (x==-1) return '0';
+}
+
+void print_curr(int game[3][3]) {
+	printf("\n\nCURRENT STATS:\n\n");
+	printf("\t %c | %c | %c\n\t-----------\n\t %c | %c | %c\n\t-----------\n\t %c | %c | %c\n\n",tochar(game[0][0]),tochar(game[0][1]),tochar(game[0][2]),tochar(game[1][0]),tochar(game[1][1]),tochar(game[1][2]),tochar(game[2][0]),tochar(game[2][1]),tochar(game[2][2]));
 }
 
 int checkwin(int game[3][3], int x) {
@@ -84,6 +109,6 @@ int change(int game[3][3], message x) {
 	}
 }
 
-index arr_to_mat (int x) { index out; out.i = x/3; out.j = x%3; return out; }
+indd arr_to_mat (int x) { indd out; out.i = x/3; out.j = x%3; return out; }
 
-int mat_to_arr (index x) { return x.i*3+x.j; } 
+int mat_to_arr (indd x) { return x.i*3+x.j; } 

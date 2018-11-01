@@ -42,12 +42,12 @@ function [] = test()
     title('Newton-Raphson modszer');
 
     figure;
-    hist(HatodikAlgo(2, 10000));
+    hist(HatodikAlgo(5, 10000));
     title('Poisson')
 
     figure;
     hist(NyolcadikAlgo(1/2, 10000), 30);
     title('geometriai');
 
-    Feladat5(1000,1)
+    Feladat5(5000,1)
 end

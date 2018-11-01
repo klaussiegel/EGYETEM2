@@ -18,5 +18,5 @@ function X = Algo5(n)
         X(i) = Y;
     end
     
-    plot(X); hold on;
+    hist(X); hold on;
 end

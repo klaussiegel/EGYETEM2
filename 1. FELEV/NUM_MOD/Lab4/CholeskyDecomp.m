@@ -1,3 +1,7 @@
+% Oláh Tamás-Lajos
+% otim1750
+% 523 / 2
+
 function L = CholeskyDecomp(A)
 	n = length(A);
 	L = zeros(n);

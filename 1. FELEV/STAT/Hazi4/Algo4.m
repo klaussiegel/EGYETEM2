@@ -14,5 +14,5 @@ function X = Algo4(n)
         
     end
     
-    plot(X); hold on;
+    hist(X); hold on;
 end

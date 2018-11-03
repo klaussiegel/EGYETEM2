@@ -47,7 +47,7 @@ void playit(int xyz) {
         print_curr(game);
 		help();
 		printf("\n\nPlease enter desired move!\n");
-		int position = 0;
+		int position;
 		scanf("\npoz = %d",&position);
 		out.poz = arr_to_mat(position);
 		out.c = '0';
@@ -55,6 +55,8 @@ void playit(int xyz) {
 		// SEND MESSAGE
 		*shm = out;
 		change(game,out);
+
+		printf("\n\nOK\n\n");
 
 
 		if (checkwin(game,-1)==1) {
@@ -74,7 +76,7 @@ void playit(int xyz) {
 		exit(0);
 	}
 
-	pause();
+	return;
 }
 
 
@@ -133,7 +135,7 @@ int main() { // -1 / 0
     // printf("\n\nPID: %d\n\n",getpid());
     // pr_inst(*inst_shm);
 
-    pause();
+    while (1==1) {pause();}
 
 	return 0;
 }

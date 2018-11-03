@@ -46,7 +46,7 @@ void playit(int xyz) {
 		message out;
 		help();
 		printf("\n\nPlease enter desired move!\n");
-		int position = 0;
+		int position;
 		scanf("\npoz = %d",&position);
 		out.poz = arr_to_mat(position);
 		out.c = 'X';
@@ -73,7 +73,7 @@ void playit(int xyz) {
 		exit(0);
 	}
 
-	pause();
+	return;
 }
 
 
@@ -160,7 +160,7 @@ int main() { // 1 / X
 
 			kill(inst_shm->pid2,SIGPWR);
 
-		pause();
+		while (1==1) {pause();}
 
 	return 0;
 }

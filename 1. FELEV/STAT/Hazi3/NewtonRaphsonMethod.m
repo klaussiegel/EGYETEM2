@@ -1,5 +1,7 @@
 function X = NewtonRaphsonMethod(dist_type, params, a, b, eps, n)
-    if (n<1)
+    % NewtonRaphsonMethod('pearson', [3, 1], 0.1, 5, 0.01, 5000)
+		
+	if (n<1)
         error("N must be >=1 !")
     end
 
@@ -24,7 +26,7 @@ function X = NewtonRaphsonMethod(dist_type, params, a, b, eps, n)
 
             X(i) = X(i)-( ( F(X(i)) - U ) / ( f(X(i)) ) );
 
-            while (abs(F(X(i)))-U > eps && ctrl < stop)
+            while (abs(F(X(i))-U) > eps && ctrl < stop)
                 X(i) = X(i)-( ( F(X(i)) - U ) / ( f(X(i)) ) );
                 ctrl = ctrl + 1;
             end
@@ -38,4 +40,5 @@ function X = NewtonRaphsonMethod(dist_type, params, a, b, eps, n)
     end
 
     hist(X);
+    title('Newton Raphson / Tangent Method');
 end

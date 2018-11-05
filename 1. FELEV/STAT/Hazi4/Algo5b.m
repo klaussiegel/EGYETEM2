@@ -3,20 +3,20 @@ function X = Algo5b(n,mu,sigma)
     a = (sqrt(exp(1)) / 2);
     
     for i=1:n
-        U = normrnd(mu,sigma);
-        V = normrnd(mu,sigma);
+        U = ULEcuyerRNG;
+        V = ULEcuyerRNG;
         Y = tan(pi*V);
         S = Y^2;
         
         while (~(U<=a*(1+S)*exp(-(S/2))))
-            U = normrnd(mu,sigma);
-            V = normrnd(mu,sigma);
+            U = ULEcuyerRNG;
+            V = ULEcuyerRNG;
             Y = tan(pi*V);
             S = Y^2;
         end
         
-        X(i) = Y * normrnd(mu,sigma);
+        X(i) = Y * sigma + mu;
     end
     
-    plot(X); hold on;
+    hist(X);
 end

@@ -10,9 +10,9 @@ function X = Algo4b(n,mu,sigma)
             V = -1 + (1+1)*rand;
         end
         
-        X(i) = Y * sign(V) * normrnd(mu,sigma);
+        X(i) = Y * sign(V) * sigma + mu;
         
     end
     
-    plot(X); hold on;
+    histogram(X);
 end

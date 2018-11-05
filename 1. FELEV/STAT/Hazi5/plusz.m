@@ -1,7 +1,9 @@
-function X = plusz(n)
+function [X,steps] = plusz(n)
     if (n<1)
         error("N must be >=1 !")
     end
+    
+    steps = 0;
     
     X = zeros(1,n);
     
@@ -19,10 +21,11 @@ function X = plusz(n)
         if (L==false)
             if (W<=h2(Y))
                 L = (W<=f(Y));
+                steps = steps + 1;
             end
         end
         
-        while (L==true)
+        while (L==false)
             U = ULEcuyerRNG;
             Y = g(rand);
             W = U*c*g(Y);
@@ -30,12 +33,15 @@ function X = plusz(n)
             if (L==false)
                 if (W<=h2(Y))
                     L = (W<=f(Y));
+                    steps = steps + 1;
                 end
             end
         end
         
         X(i) = Y;
     end
+    
+    disp(steps);
     
     hist(X);
     title("Plusz függvény");

@@ -56,10 +56,11 @@ function X = kozrefogas(n)
 			counter = counter+1;
 		end
 		X(i) = Y;
-	end
+    end
 	
+    hist(X);
 	avg_steps = counter / n;
-	disp(avg_steps);
+	disp(avg_steps)
 	act_call = cnt/n;
-	disp(act_call);
+	disp(act_call)
 end

@@ -35,7 +35,7 @@ function X = kozrefogas(n)
   	end
 		counter = counter+1;
 	
-		while (L==true)
+		while (L==false)
 			U = ULEcuyerRNG();
 			V = ULEcuyerRNG();
 			

@@ -50,7 +50,6 @@ void zero(int game[3][3]) {
 
 void win(char c) {
 	printf("\n\n\n\n\n\n\nWINNER WINNER CHICKEN DINNER!\n %c WON!\n\n\n",c);
-	exit(0);
 }
 
 int valid(message x) {
@@ -129,6 +128,17 @@ int change(int game[3][3], message x) {
 		printf("\n\nCELL ALREADY OCCUPIED!\n\n");
 		return -1;
 	}
+}
+
+int dontetlen(int game[3][3]) {
+	int i,j;
+	for (i=0; i<=2; i++) {
+		for (j=0; j<=2; j++) {
+			if (game[i][j]==0) return 0;
+		}
+	}
+
+	return 1;
 }
 
 void pr_msg(message x) {

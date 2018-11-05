@@ -34,30 +34,50 @@ int inst_shmid;
 int shmid;
 int game[3][3];
 
+void lose(int xyz) {
+	printf("\n\nYOU LOSE! BETTER LUCK NEXT TIME!\n\n");
+	exit(0);
+}
+
+void draw(int xyz) {
+	printf("\n\nIT'S A DRAW!\n\n");
+	print_curr(game);
+	exit(0);
+}
+
 
 void playit(int xyz) {
 	message in = shm[0];
+
+	shm->poz.i = 0;
+	shm->poz.j = 0;
 
 	// READ MESSAGE
 	change(game,in);
 
 	if (checkwin(game,1)!=1 && checkwin(game,-1)!=1) {
+		if (dontetlen(game)==1) {
+			printf("\n\nIT'S A DRAW!\n\n");
+			print_curr(game);
+			kill(inst_shm->pid1,SIGUSR1);
+			exit(0);
+		}
+
 		// NOT A WIN
 		message out;
         print_curr(game);
 		help();
-		printf("\n\nPlease enter desired move!\n");
+		printf("\n\nPlease enter desired move!\npoz = ");
 		int position;
-		scanf("\npoz = %d",&position);
+		scanf("%d",&position);
+		printf("\n\nINDL %d\n\n",position);
 		out.poz = arr_to_mat(position);
 		out.c = '0';
 
 		// SEND MESSAGE
 		*shm = out;
 		change(game,out);
-
-		printf("\n\nOK\n\n");
-
+		print_curr(game);
 
 		if (checkwin(game,-1)==1) {
 			win('0');
@@ -83,44 +103,14 @@ void playit(int xyz) {
 
 int main() { // -1 / 0
 	// CREATE SHM
-		// int shmid = shmget(1234,sizeof(int),IPC_CREAT|0666);
-		// int* shm;
-		// shm = (int*) shmat(shmid,0,0);
-
-	// SHM FOR INSTANCE COUNT
-
-	// inst_shmid = shmget(num_key,sizeof(instance),IPC_CREAT|0666);
-
-    // if (inst_shmid == -1) {
-	// 	print_error("INST_SHMID ERROR");
-	// }
 
     int i_shm = open_inst_shm();
 	inst_shm = (instance*)create_shared_memory(sizeof(instance),i_shm);
 
-	// inst_shm = (instance*) shmat(inst_shmid,0,0);
-
-    // if (inst_shm == (instance*) -1) {
-	// 	print_error("INSTANCE ERROR");
-	// }
-
 	if (inst_shm->inst == 2) print_error("Too many instances");
-
-	// SHM FOR COMMUNICATION
-	// shmid = shmget(key,sizeof(message),0666);
-
-	// if (shmid == -1) {
-	// 	print_error("INST_SHMID ERROR");
-	// }
-
-	// shm = (message*) shmat(shmid,0,0);
 
     int main_shm = open_main_shm();
 	shm = (message*)create_shared_memory(sizeof(message),main_shm);
-
-	// if (shm == (message*) -1) {
-	// 	print_error("ATTACH ERROR");
-	// }
 
 	// CREATE GAME TABLE
 	zero(game);
@@ -128,12 +118,11 @@ int main() { // -1 / 0
 	print_curr(game);
 
 	signal(SIGPWR,&playit);
+	signal(SIGTERM,&lose);
+	signal(SIGUSR1,&draw);
 
     inst_shm->pid2 = getpid();
     inst_shm->inst++;
-
-    // printf("\n\nPID: %d\n\n",getpid());
-    // pr_inst(*inst_shm);
 
     while (1==1) {pause();}
 

@@ -1,6 +1,71 @@
 # Saját 2
 ![DATABASE](./DATABASE.png)
 
+- [Saját 2](#saját-2)
+    - [MAIN STRUCTURE](#main-structure)
+        - [CHURCH STATS](#church-stats)
+        - [BLAME SYSTEM](#blame-system)
+        - [SONG DATABASE](#song-database)
+        - [SERVICE SCHEDULE](#service-schedule)
+        - [CONNECTIONS](#connections)
+    - [CODE](#code)
+        - [CREATE DATABASE](#create-database)
+        - [CHURCH STATS](#church-stats-1)
+            - [Countries](#countries)
+            - [Locations](#locations)
+            - [Churches](#churches)
+        - [BLAME SYSTEM](#blame-system-1)
+            - [Users](#users)
+            - [Modifications](#modifications)
+            - [Commits](#commits)
+        - [SONG DATABASE](#song-database-1)
+            - [Songbooks](#songbooks)
+            - [Songs](#songs)
+            - [Topics](#topics)
+            - [Authors](#authors)
+            - [Has_Author](#has_author)
+            - [Lyrics](#lyrics)
+        - [SERVICE SCHEDULE](#service-schedule-1)
+            - [Schedules](#schedules)
+        - [CONNECTIONS](#connections-1)
+            - [Has_Access_DB (User <-> DB)](#has_access_db-user---db)
+            - [Holds_SB_S (Songbook <-> Song)](#holds_sb_s-songbook---song)
+            - [Has_Topic (Song <-> Topic)](#has_topic-song---topic)
+            - [Holds_SCHED (Schedule <-> Song)](#holds_sched-schedule---song)
+            - [Has_Access_SCH (User <-> Schedule)](#has_access_sch-user---schedule)
+
+## MAIN STRUCTURE
+
+### CHURCH STATS
+Countries ( **CN_ID** , CNT_NAME )
+Locations ( **LOC_ID** , **CN_ID** , LOC_NAME )
+Churches ( **CH_NAME** , **LOC_ID** , NO_OF_PPL )
+
+### BLAME SYSTEM
+Users ( **UserID** , **CH_NAME** , Username , Passwd , Birthday )
+Modifications ( **MOD_ID** , Mod_date , *SONG_ID* )
+Commits ( **UserID** , **MOD_ID** )
+
+### SONG DATABASE
+Songbooks ( **SB_ID** , NO_OF_SONGS , Release_Year )
+Songs ( **SongID** , Title , MusicalKey , Songmap , **Lyrics** )
+Topics ( **TOPIC_ID** , TName )
+Authors ( **Author_ID** , AName )
+Has_Author ( **SongID** , **Author_ID** )
+Lyrics ( **Lyr_ID** , Lang , *Lyr_Text* )
+
+### SERVICE SCHEDULE
+Schedules ( **SC_ID** , SDate )
+
+### CONNECTIONS
+Has_Acces_DB ( **UserID** , **SB_ID** )
+Holds_SB_S ( **SB_ID** , **SongID** )
+Has_Topic ( **SongID** , **TOPIC_ID** )
+Holds_SCHED ( **SC_ID** , **SongID** )
+Has_Access_SCH ( **UserID** , **SC_ID** )
+
+## CODE
+### CREATE DATABASE
 ```sql
 USE master
 GO
@@ -14,39 +79,208 @@ GO
 ```
 
 ### CHURCH STATS
-Countries ( **CN_ID** , CNT_NAME )
-
+#### Countries
 ```sql
 CREATE TABLE Countries (
-    CN_ID INT,
+    CN_ID INT IDENTITY,
     CNT_NAME VARCHAR(50),
 
-    CONSTRAINT COUNTRY_PK PRIMARY KEY(CH_ID)
+    CONSTRAINT COUNTRY_PK PRIMARY KEY(CN_ID)
+)
+```
+#### Locations
+```sql
+CREATE TABLE Locations (
+    LOC_ID INT IDENTITY,
+    CN_ID INT,
+    LOC_NAME VARCHAR(100),
+
+    CONSTRAINT LOC_FK FOREIGN KEY(CN_ID) REFERENCES Countries(CN_ID),
+    CONSTRAINT LOC_PK PRIMARY KEY(LOC_ID)
 )
 ```
 
-Locations ( **LOC_ID** , **CN_ID** , LOC_NAME )
-Churches ( **CH_NAME** , **LOC_ID** , NO_OF_PPL )
+#### Churches
+```sql
+CREATE TABLE Churches (
+    CH_NAME VARCHAR(200),
+    LOC_ID INT,
+    NO_OF_PPL INT,
+
+    CONSTRAINT CH_FK FOREIGN KEY(LOC_ID) REFERENCES Locations(LOC_ID),
+    CONSTRAINT CH_PK PRIMARY KEY(CH_NAME)
+)
+```
 
 ### BLAME SYSTEM
-Users ( **UID** , **CH_NAME** , Username , Password , Birthday )
-Modifications ( **MOD_ID** , Date , *SONG_ID* )
-Commits ( **UID** , **MOD_ID** )
+#### Users
+```sql
+CREATE TABLE Users (
+    UserID INT IDENTITY,
+    CH_NAME VARCHAR(200),
+    Username VARCHAR(30),
+    Passwd VARCHAR(30),
+    Birthday DATE,
+
+    CONSTRAINT USR_FK FOREIGN KEY(CH_NAME) REFERENCES Churches(CH_NAME),
+    CONSTRAINT USR_PK PRIMARY KEY(UserID)
+)
+```
+
+#### Modifications
+```sql
+CREATE TABLE Modifications (
+    MOD_ID INT IDENTITY,
+    Mod_date DATE,
+    SONG_ID INT,
+
+    CONSTRAINT MOD_FK FOREIGN KEY(SONG_ID) REFERENCES Songs(SongID),
+    CONSTRAINT MOD_PK PRIMARY KEY(MOD_ID)
+)
+```
+
+#### Commits
+```sql
+CREATE TABLE Commits (
+    UserID INT,
+    MOD_ID INT,
+
+    CONSTRAINT COM_FK1 FOREIGN KEY(UserID) REFERENCES Users(UserID),
+    CONSTRAINT COM_FK2 FOREIGN KEY(MOD_ID) REFERENCES Modifications(MOD_ID)
+)
+```
 
 ### SONG DATABASE
-Songbooks ( **SB_ID** , NO_OF_SONGS , Year )
-Songs ( **SID** , Title , Key , **First_Added_By** , Songmap , **Lyrics** )
-Topic ( **TOPIC_ID** , Name )
-Author ( **Author_ID** , Name )
-Has_Author ( **SID** , **Author_ID** )
-Lyrics ( **Lyr_ID** , Language , *Lyr_text* )
+#### Songbooks
+```sql
+CREATE TABLE Songbooks (
+    SB_ID INT IDENTITY,
+    NO_OF_SONGS INT,
+    Release_Year DATE,
+
+    CONSTRAINT SB_PK PRIMARY KEY(SB_ID)
+)
+```
+
+#### Songs
+```sql
+CREATE TABLE Songs (
+    SongID INT IDENTITY,
+    Title VARCHAR(100),
+    MusicalKey VARCHAR(5),
+    Songmap VARCHAR(200),
+    Lyrics INT,
+
+    CONSTRAINT Songs_PK PRIMARY KEY(SongID),
+    CONSTRAINT Songs_FK FOREIGN KEY(Lyrics) REFERENCES Lyrics(Lyr_ID)
+)
+```
+
+#### Topics
+```sql
+CREATE TABLE Topics (
+    TOPIC_ID INT IDENTITY,
+    TName VARCHAR(200),
+
+    CONSTRAINT Topic_PK PRIMARY KEY(TOPIC_ID)
+)
+```
+
+#### Authors
+```sql
+CREATE TABLE Authors (
+    Author_ID INT IDENTITY,
+    AName VARCHAR(200),
+
+    CONSTRAINT Aut_PK PRIMARY KEY(Author_ID)
+)
+```
+
+#### Has_Author
+```sql
+CREATE TABLE Has_Author (
+    SongID INT,
+    Author_ID INT,
+
+    CONSTRAINT HA_FK1 FOREIGN KEY(SongID) REFERENCES Songs(SongID),
+    CONSTRAINT HA_FK2 FOREIGN KEY(Author_ID) REFERENCES Authors(Author_ID)
+)
+```
+
+#### Lyrics
+```sql
+CREATE TABLE Lyrics (
+    Lyr_ID INT IDENTITY,
+    Lang VARCHAR(30),
+    Lyr_Text TEXT,
+
+    CONSTRAINT Lyr_PK PRIMARY KEY(Lyr_ID)
+)
+```
 
 ### SERVICE SCHEDULE
-Schedules ( **SC_ID** , Date )
+#### Schedules
+```sql
+CREATE TABLE Schedules (
+    SC_ID INT IDENTITY,
+    SDate DATE,
+
+    CONSTRAINT SCH_PK PRIMARY KEY(SC_ID)
+)
+```
 
 ### CONNECTIONS
-Has_Acces_DB ( **UID** , **SB_ID** )
-Holds_SB_S ( **SB_ID** , **SID** )
-Has_Topic ( **SID** , **TOPIC_ID** )
-Holds_SCH ( **SC_ID** , **SID** )
-Has_Access_SCH ( **UID** , **SC_ID** )
+#### Has_Access_DB (User <-> DB)
+```sql
+CREATE TABLE Has_Access_DB (
+    UserID INT,
+    SB_ID INT,
+
+    CONSTRAINT HADB_FK1 FOREIGN KEY(UserID) REFERENCES Users(UserID),
+    CONSTRAINT HADB_FK2 FOREIGN KEY(SB_ID) REFERENCES Songbooks(SB_ID)
+)
+```
+
+#### Holds_SB_S (Songbook <-> Song)
+```sql
+CREATE TABLE Holds_SB_S (
+    SB_ID INT,
+    SongID INT,
+
+    CONSTRAINT HSBS_FK1 FOREIGN KEY(SB_ID) REFERENCES Songbooks(SB_ID),
+    CONSTRAINT HSBS_FK2 FOREIGN KEY(SongID) REFERENCES Songs(SongID)
+)
+```
+
+#### Has_Topic (Song <-> Topic)
+```sql
+CREATE TABLE Has_Topic (
+    SongID INT,
+    TOPIC_ID INT,
+
+    CONSTRAINT HST_FK1 FOREIGN KEY(SongID) REFERENCES Songs(SongID),
+    CONSTRAINT HST_FK2 FOREIGN KEY(TOPIC_ID) REFERENCES Topics(TOPIC_ID)
+)
+```
+
+#### Holds_SCHED (Schedule <-> Song)
+```sql
+CREATE TABLE Holds_SCHED (
+    SC_ID INT,
+    SongID INT,
+
+    CONSTRAINT H_SCHED_FK1 FOREIGN KEY(SC_ID) REFERENCES Schedules(SC_ID),
+    CONSTRAINT H_SCHED_FK2 FOREIGN KEY(SongID) REFERENCES Songs(SongID)
+)
+```
+
+#### Has_Access_SCH (User <-> Schedule)
+```sql
+CREATE TABLE Has_Access_SCH (
+    UserID INT,
+    SC_ID INT,
+
+    CONSTRAINT HASCH_FK1 FOREIGN KEY(UserID) REFERENCES Users(UserID),
+    CONSTRAINT HASCH_FK2 FOREIGN KEY(SC_ID) REFERENCES Schedules(SC_ID)
+)
+```

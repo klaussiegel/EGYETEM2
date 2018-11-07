@@ -215,13 +215,10 @@ hany_szinesz(Ans) :-
 
 %     5. Keressük meg a favorit színészeket: azon 25 színész, melyek a legtöbb más társukkal jóPartnerek.
 
-% joParts(A,Out) :-
-%     findall(X,joPartner(X,A),Out).
+joPartner_num(A,X) :-
+    findall(Q,joPartner(A,Q),Out),
+    length(Out,X).
 
-% joPart_num(A,Out) :-
-%     joParts(A,L),
-%     length(L,Out).
-
-% top25(X) :-
-%     osszes_szinesz(L),
-%     max_list('Param1', 'Param2')
+top25(X):-
+    osszes_szinesz(L),
+    

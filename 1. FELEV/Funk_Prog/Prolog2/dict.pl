@@ -41,6 +41,9 @@ veletlen_perm(N,L) :-
     general(1,N,Ctrl),
     veletlen_perm(N,Ctrl,L).
 
+randperm(N,L):-
+    veletlen_perm(N,L).
+
 % 3. Írjuk meg a deriválás szabályait.
 % Használjuk a négy alapműveletet (+,-,*,/)
 % és a két trigonometriai függvényt (sin, cos).
@@ -158,7 +161,7 @@ bet_05_dir(L) :-
 %     2. Kérdezzük le, hogy két filmet ugyanabban az évben rendeztek-e.
 
 ugyanaz_ev(F1,F2) :-
-    movie(F1,X), movie(F2,X), F1 \== F2, X = X, !.
+    movie(F1,X), movie(F2,X), F1 \== F2, X = X, nl().
 
 %     Keressük meg, hogy két színész (vagy színésznő) jóPartner-e.
 %     jóPartner két színész, ha közösen játszott több, mint egy (1) filmben.
@@ -171,7 +174,7 @@ joPartner(X,Y) :-
     (actor(F1,Y,_) ; actress(F1,Y,_) ),
     (actor(F2,X,_) ; actress(F2,X,_) ),
     (actor(F2,Y,_) ; actress(F2,Y,_) ),
-    F1 \== F2, !.
+    F1 \== F2.
 
 
 %     3. A Film az Ev-nél régebbi-e.
@@ -196,6 +199,11 @@ regebbi_film_e(F1,F2) :-
 
 %     4. Keressük meg hány különböző színész szerepel a tudásbázisban.
 
+print_List([]).
+print_List([A|T]) :-
+    writeln(A),
+    print_List(T).
+
 act(L) :-
     actor(_,L,_).
 
@@ -215,10 +223,27 @@ hany_szinesz(Ans) :-
 
 %     5. Keressük meg a favorit színészeket: azon 25 színész, melyek a legtöbb más társukkal jóPartnerek.
 
+% top25(L),nl(),print_List(L),nl().
+
 joPartner_num(A,X) :-
     findall(Q,joPartner(A,Q),Out),
     length(Out,X).
 
-top25(X):-
+create([],[]).
+create([A|T],[[A,N]|T2]) :-
+    joPartner_num(A,N),
+    create(T,T2).
+
+elsoN(_,0,[]):-!.
+elsoN([],_,[]):-!.
+elsoN([[X,_]],_,[X]):-!.
+elsoN([[A,_]|T],N,[A|T2]) :-
+    N \= 0,
+    NN is N-1,
+    elsoN(T,NN,T2).
+
+top25(Out):-
     osszes_szinesz(L),
-    
+    create(L,S),
+    sort(2, @>=, S, S_sorted),
+    elsoN(S_sorted,25,Out), !.

@@ -1,5 +1,7 @@
 # Saját 2
 ![DATABASE](./DATABASE.png)
+![image2](./DIAGRAM.png)
+
 
 - [Saját 2](#saját-2)
     - [MAIN STRUCTURE](#main-structure)
@@ -291,5 +293,3 @@ CREATE TABLE Has_Access_SCH (
     CONSTRAINT HASCH_PK PRIMARY KEY(UserID,SC_ID)
 )
 ```
-
-![image2](./DIAGRAM.png)

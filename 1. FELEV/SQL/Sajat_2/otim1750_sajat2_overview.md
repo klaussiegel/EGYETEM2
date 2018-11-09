@@ -1,7 +1,8 @@
 # Saját 2
 ![DATABASE](./DATABASE.png)
-![image2](./DIAGRAM.png)
-
+____
+![image2](./otim1750_sajat2.png)
+____
 
 - [Saját 2](#saját-2)
     - [MAIN STRUCTURE](#main-structure)

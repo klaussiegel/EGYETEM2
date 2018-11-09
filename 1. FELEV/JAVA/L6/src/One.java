@@ -2,9 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import static java.lang.System.exit;
 
 public class One extends JFrame {
     One() {
@@ -21,7 +18,7 @@ public class One extends JFrame {
         lab.setFont(new Font("Arial",2,20));
         lab.setHorizontalAlignment(SwingConstants.CENTER);
         lab.setVerticalAlignment(SwingConstants.CENTER);
-        Button but = new Button("( ͡° ͜ʖ ͡°)");
+        JButton but = new JButton("YEET");
         but.setFont(new Font("Arial Black",2,20));
         but.setBackground(new Color(154, 154, 154));
 
@@ -35,7 +32,7 @@ public class One extends JFrame {
                             time.getYear() +
                             ". " + time.getMonth() + ". " +
                             time.getDayOfMonth() + ". " +
-                            "<br><div style=\"text-align: center;\">" +
+                            "<br><div style=\"color: red; text-align: center;\">" +
                                 time.getHour() + " : " + time.getMinute()+
                             "</div>" +
                         "</html>");

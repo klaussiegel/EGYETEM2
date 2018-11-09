@@ -225,8 +225,9 @@ hany_szinesz(Ans) :-
 
 % top25(L),nl(),print_List(L),nl().
 
-joPartner_num(A,X) :-
-    findall(Q,joPartner(A,Q),Out),
+joPartner_num(A,X):-
+    findall(Q,joPartner(A,Q),Out1),
+    list_to_set(Out1,Out),
     length(Out,X).
 
 create([],[]).
@@ -234,10 +235,10 @@ create([A|T],[[A,N]|T2]) :-
     joPartner_num(A,N),
     create(T,T2).
 
-elsoN(_,0,[]):-!.
-elsoN([],_,[]):-!.
-elsoN([[X,_]],_,[X]):-!.
-elsoN([[A,_]|T],N,[A|T2]) :-
+elsoN(_,0,[]).
+elsoN([],_,[]).
+elsoN([X],_,[X]).
+elsoN([A|T],N,[A|T2]) :-
     N \= 0,
     NN is N-1,
     elsoN(T,NN,T2).
@@ -246,4 +247,4 @@ top25(Out):-
     osszes_szinesz(L),
     create(L,S),
     sort(2, @>=, S, S_sorted),
-    elsoN(S_sorted,25,Out), !.
+    elsoN(S_sorted,25,Out).

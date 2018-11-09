@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
@@ -22,10 +21,10 @@ public class Main {
             }
         });
 
-        Button E = new Button(">");
-        Button W = new Button("<");
-        Button S = new Button("\\/");
-        Button N = new Button("/\\");
+        JButton E = new JButton(">");
+        JButton W = new JButton("<");
+        JButton S = new JButton("\\/");
+        JButton N = new JButton("/\\");
 
         System.out.println(x.getWidth() + " x " + x.getHeight());
 
@@ -134,7 +133,7 @@ public class Main {
 
     public static void main(String args[]) {
         egy();
-        // ketto();
-        // harom();
+        ketto();
+        harom();
     }
 }

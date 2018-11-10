@@ -1,3 +1,6 @@
+#ifndef __Ship_h__
+#define __Ship_h__
+
 #include <iostream>
 #include <stdio.h>
 #include <fcntl.h>
@@ -11,44 +14,15 @@
 #include <semaphore.h>
 #include <string>
 #include <deque>
+#include "auxiliary.h"
 
 using namespace std;
-
-#define HIT 0
-#define MISS 1
-#define FATAL -1
-#define STD 2
-
-#define URES false
-#define HAJO true
-
-#define LOSE 666
-#define WIN 333
-
-#define DESTROYER 2
-#define CRUISER 3
-#define SUBMARINE 3
-#define BATTLESHIP 4
-#define CARRIER 5
-
-#define VERTICAL false
-#define HORIZONTAL true
-
-typedef struct {
-    int i;
-    int j;
-} index;
-
-typedef struct {
-    int i;
-    int j;
-    int state;
-} ext_index;
 
 class Ship {
     public:
         int type;
         bool vert_hor;
+        int hp;
         ext_index* start;
 
         Ship(int type, index strt, bool v_h) {
@@ -182,6 +156,8 @@ class Ship {
                     }
                 } break;
             }
+
+            this->hp = this->type;
         }
 
         ~Ship() {
@@ -202,11 +178,7 @@ class Ship {
         }
 
         bool fatal() {
-            for (int i=0; i<this->type; i++) {
-                if (this->start[i].state == STD) return false;
-            }
-
-            return true;
+            return (this->hp==0);
         }
 
         bool thisShipCoord(index x) {
@@ -218,9 +190,10 @@ class Ship {
         }
 
         int attack(index i) { // HIT / MISS / FATAL
-            for (int i=0; i<this->type; i++) {
-                if (this->start[i].i==i.i && start[i].j==i.j) {
-                    this->start[i].state = HIT;
+            for (int ind=0; ind<this->type; ind++) {
+                if (this->start[ind].i==i.i && start[ind].j==i.j) {
+                    this->start[ind].state = HIT;
+                    this->hp--;
 
                     return (this->fatal()) ? FATAL : HIT;
                 }
@@ -230,171 +203,4 @@ class Ship {
         }
 };
 
-class GameBoard {
-    private:
-        bool** a;
-        int size;
-        deque<Ship> ships;
-
-    public:
-        GameBoard() {
-            this->size = 12;
-            this->a = new bool*[this->size];
-
-            for (int i=0; i<this->size; i++) {
-                this->a[i] = new bool[this->size];
-
-                for (int j=0; j<this->size; j++) {
-                    a[i][j] = URES;
-                }
-            }
-        }
-
-        ~GameBoard() {
-            for (int i=0; i<this->size; i++) {
-                delete [] this->a[i];
-            }
-
-            delete [] this->a;
-        }
-
-        void destroyShip(Ship x) {
-            deque<index> k = x.getPoz();
-
-            for (index a : k) {
-                this->a[a.i][a.j] = URES;
-            }
-        }
-
-        int getInd(int i,int j) {
-            if (i<0 || i>=this->size || j<0 || j>=this->size) throw "Out of bounds!";
-
-            return this->a[i][j];
-        }
-
-        void setInd(int i, int j, int value) {
-            if (i<0 || i>=this->size || j<0 || j>=this->size) throw "Out of bounds!";
-            this->a[i][j] = value;
-        }
-
-        void printB() {
-            cout << "\n\n";
-            for (int i=0; i<this->size; i++) {
-                cout << "\t";
-                for (int j=0; j<this->size; j++) {
-                    cout << this->a[i][j] << " ";
-                }
-                cout << "\n";
-            }
-            cout << "\n\n";
-        }
-
-        int attack(index x) {
-            if (this->a[x.i][x.j]) {
-                this->a[x.i][x.j] = true;
-                for (deque<Ship>::iterator i = this->ships.begin(); i!=this->ships.end(); i++) {
-                    int resp = i->attack(x);
-                    if (resp == FATAL) {
-                        this->destroyShip(*i);
-                        this->ships.erase(i);
-                        if (this->doom()) return LOSE;
-                        else return FATAL;
-                    } else return HIT;
-                }
-            } else return MISS;
-        }
-
-        bool doom() {
-            return this->ships.empty();
-        }
-};
-
-typedef struct {
-    int player_num;
-    int GamerID;
-    index Target;
-    int Prev;
-} SHM;
-
-class SharedMemory {
-    private:
-        int shm_id;
-        SHM* shm_ptr;
-
-    public:
-    SharedMemory(int x) {
-        this->shm_id = shm_open("/Torpedo",O_CREAT|O_RDWR,0666);
-        ftruncate(this->shm_id,sizeof(SHM));
-        int protection = PROT_READ | PROT_WRITE;
-        int visibility = MAP_SHARED;
-        this->shm_ptr = (SHM*)mmap(NULL,sizeof(SHM),protection, visibility, this->shm_id,0);
-
-        this->shm_ptr->GamerID = 0;
-        this->shm_ptr->player_num = 1;
-        this->shm_ptr->Prev = STD;
-        this->shm_ptr->Target.i = 0;
-        this->shm_ptr->Target.j = 0;
-    }
-
-    SharedMemory() {
-        this->shm_id = shm_open("/Torpedo",O_CREAT|O_RDWR,0666);
-        ftruncate(this->shm_id,sizeof(SHM));
-        int protection = PROT_READ | PROT_WRITE;
-        int visibility = MAP_SHARED;
-        this->shm_ptr = (SHM*)mmap(NULL,sizeof(SHM),protection, visibility, this->shm_id,0);
-
-        if (this->shm_ptr->player_num>=2) {
-            cout << "\n\nToo many players!\n\n";
-            exit(1);
-        } else this->shm_ptr->player_num++;
-    }
-
-    ~SharedMemory() {
-    }
-
-    SHM getContent() {
-        return *this->shm_ptr;
-    }
-
-    void setContent(SHM ct) {
-        *this->shm_ptr = ct;
-    }
-
-    void printSHM() {
-        cout << "\n\nSHM {\n    " << "player_num : " << this->shm_ptr->player_num;
-        cout << ",\n    GamerID : " << this->shm_ptr->GamerID << ",\n    ";
-        cout << "Target : Index {\n        " << "i : " << this->shm_ptr->Target.i << ",\n        ";
-        cout << "j : " << this->shm_ptr->Target.j << "\n    },\n    ";
-        cout << "prev: ";
-
-        if (this->shm_ptr->Prev==HIT) cout << "HIT";
-        else {
-            if (this->shm_ptr->Prev==FATAL) cout << "FATAL";
-            else cout << "NO HIT";
-        }
-
-        cout << "\n}\n\n";
-    }
-};
-
-class Torpedo {
-    private:
-        GameBoard a;
-        SHM shm;
-
-    public:
-    void readFromSHM(SharedMemory shm, pid_t pid) {
-        this->shm = shm.getContent();
-        this->shm.GamerID = pid;
-
-        if (this->shm.Prev!=STD) {
-
-        }
-    }
-
-    void writeToSHM(SharedMemory shm) {
-        shm.setContent(this->shm);
-    }
-
-    // GAME LOGIC
-};
+#endif

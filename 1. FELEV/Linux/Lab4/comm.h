@@ -22,6 +22,9 @@ using namespace std;
 #define URES false
 #define HAJO true
 
+#define LOSE 666
+#define WIN 333
+
 #define DESTROYER 2
 #define CRUISER 3
 #define SUBMARINE 3
@@ -185,6 +188,19 @@ class Ship {
             delete [] this->start;
         }
 
+        deque<index> getPoz() {
+            deque<index> ret;
+            for (int i=0; i<this->type; i++) {
+                index k;
+                k.i = this->start[i].i;
+                k.j = this->start[i].j;
+
+                ret.push_back(k);
+            }
+
+            return ret;
+        }
+
         bool fatal() {
             for (int i=0; i<this->type; i++) {
                 if (this->start[i].state == STD) return false;
@@ -242,6 +258,14 @@ class GameBoard {
             delete [] this->a;
         }
 
+        void destroyShip(Ship x) {
+            deque<index> k = x.getPoz();
+
+            for (index a : k) {
+                this->a[a.i][a.j] = URES;
+            }
+        }
+
         int getInd(int i,int j) {
             if (i<0 || i>=this->size || j<0 || j>=this->size) throw "Out of bounds!";
 
@@ -271,11 +295,17 @@ class GameBoard {
                 for (deque<Ship>::iterator i = this->ships.begin(); i!=this->ships.end(); i++) {
                     int resp = i->attack(x);
                     if (resp == FATAL) {
+                        this->destroyShip(*i);
                         this->ships.erase(i);
-                        return FATAL;
+                        if (this->doom()) return LOSE;
+                        else return FATAL;
                     } else return HIT;
                 }
-            }
+            } else return MISS;
+        }
+
+        bool doom() {
+            return this->ships.empty();
         }
 };
 
@@ -357,7 +387,9 @@ class Torpedo {
         this->shm = shm.getContent();
         this->shm.GamerID = pid;
 
-        if ()
+        if (this->shm.Prev!=STD) {
+
+        }
     }
 
     void writeToSHM(SharedMemory shm) {

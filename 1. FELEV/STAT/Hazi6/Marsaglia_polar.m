@@ -26,13 +26,6 @@ function [X1,X2] = Marsaglia_polar(n)
 		X2(i) = T*Z2;
     end
 	
-%     subplot(2,1,1)
-% 	histogram(X1);
-%     title("Marsaglia - X1")
-%     
-%     subplot(2,1,2)
-% 	histogram(X2);
-%     title("Marsaglia - X2")
     X = [X1;X2]';
     hist3(X)
 end

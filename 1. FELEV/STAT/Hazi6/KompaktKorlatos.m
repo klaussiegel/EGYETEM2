@@ -1,30 +1,33 @@
 function X = KompaktKorlatos(n)
     f = @(x,y)(fuggveny(x,y));
-    X = zeros(2,n);
-
     a = 0;
-    b = 1;
-    M = (1200/49)*sqrt(5/7);
+    b = pi;
+    X = zeros(2,n);
+    Y = zeros(1,2);
+    M = (2/pi^2);
     
     for i=1:n
-        U = ULEcuyerRNG();
-        V1 = ULEcuyerRNG();
-        V2 = ULEcuyerRNG();
-        
-        Y1 = a+(b-a)*V1;
-        Y2 = a+(b-a)*V2;
-        
-        while ~(U*M<=f(Y1,Y2))
-            U = ULEcuyerRNG();
-            V1 = ULEcuyerRNG();
-            V2 = ULEcuyerRNG();
+        U = ULEcuyerRNG * (2/pi^2);
+        V1 = ULEcuyerRNG;
+        V2 = ULEcuyerRNG;
 
-            Y1 = a+(b-a)*V1;
-            Y2 = a+(b-a)*V2;
+        Y(1) = a+(b-a)*V1;
+        Y(2) = a+(b-a)*V2;
+        
+        while ~(U*M<=f(Y(1),Y(2)))
+             U = ULEcuyerRNG * (2/pi^2);
+            U = ULEcuyerRNG;
+            V1 = ULEcuyerRNG;
+            V2 = ULEcuyerRNG;
+            
+            Y(1) = a+(b-a)*V1;
+            Y(2) = a+(b-a)*V2;
         end
         
-        X(i) = Y;
+        X(1,i) = Y(1);
+        X(2,i) = Y(2);
     end
     
-    hist(X);
+    
+     hist3(X');
 end

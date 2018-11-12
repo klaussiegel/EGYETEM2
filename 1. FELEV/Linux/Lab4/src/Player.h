@@ -28,6 +28,67 @@ class Player {
         SHM shm;
         index Prev;
 
+        void readFromSHM7a(SharedMemory shared_mem) {
+            this->shm = shared_mem.getContent();
+
+            if (this->shm.PlayerID==getpid()) {
+                perror("FATAL ERROR!");
+                exit(1);
+            }
+
+            this->shm.PlayerID = getpid();
+            int prev = this->shm.Prev;
+
+            switch (prev) {
+                case HIT: {
+                    this->a.setInd(this->Prev.i,this->Prev.j,S_HIT);
+                } break;
+
+                case MISS: {
+                    this->a.setInd(this->Prev.i,this->Prev.j,S_MISS);
+                } break;
+
+                case LOSE: {
+                    pWin();
+                    if (this->shm.players[0]==getpid()) kill(this->shm.players[1],SIGUSR2);
+                        else kill(this->shm.players[0],SIGUSR2);
+                    exit(0);
+                } break;
+            }
+        }
+
+        void readFromSHM7b(SharedMemory shared_mem) {
+            this->shm = shared_mem.getContent();
+
+            if (this->shm.PlayerID==getpid()) {
+                perror("FATAL ERROR!");
+                exit(1);
+            }
+
+            this->shm.PlayerID = getpid();
+
+            int resp = this->a.attack(this->shm.Target);
+            this->shm.Prev = resp;
+
+            switch (resp) {
+                case HIT: {
+                    this->a.setInd(this->shm.Target.i,this->shm.Target.j,R_HIT);
+                } break;
+
+                case MISS: {
+                    this->a.setInd(this->shm.Target.i,this->shm.Target.j,R_MISS);
+                } break;
+
+                case LOSE: {
+                    this->writeToSHM(shared_mem);
+                    pLose();
+                    if (this->shm.players[0]==getpid()) kill(this->shm.players[1],SIGUSR1);
+                    else kill(this->shm.players[0],SIGUSR1);
+                    exit(0);
+                } break;
+            }
+        }
+
         void readFromSHM(SharedMemory shared_mem) {
             this->shm = shared_mem.getContent();
 
@@ -58,7 +119,8 @@ class Player {
                             case LOSE: {
                                 this->writeToSHM(shared_mem);
                                 pLose();
-                                // SIGNAL SEMAPHORE
+                                if (this->shm.players[0]==getpid()) kill(this->shm.players[1],SIGUSR1);
+                                else kill(this->shm.players[0],SIGUSR1);
                                 exit(0);
                             } break;
                         }
@@ -66,11 +128,33 @@ class Player {
 
                     case MISS: {
                         this->a.setInd(this->Prev.i,this->Prev.j,S_MISS);
+                    
+                        int resp = this->a.attack(this->shm.Target);
+                        this->shm.Prev = resp;
+
+                        switch (resp) {
+                            case HIT: {
+                                this->a.setInd(this->shm.Target.i,this->shm.Target.j,R_HIT);
+                            } break;
+
+                            case MISS: {
+                                this->a.setInd(this->shm.Target.i,this->shm.Target.j,R_MISS);
+                            } break;
+
+                            case LOSE: {
+                                this->writeToSHM(shared_mem);
+                                pLose();
+                                if (this->shm.players[0]==getpid()) kill(this->shm.players[1],SIGUSR1);
+                                else kill(this->shm.players[0],SIGUSR1);
+                                exit(0);
+                            } break;
+                        }
                     } break;
 
                     case LOSE: {
                         pWin();
-                        // SIGNAL SEMAPHORE
+                        if (this->shm.players[0]==getpid()) kill(this->shm.players[1],SIGUSR2);
+                        else kill(this->shm.players[0],SIGUSR2);
                         exit(0);
                     } break;
                 }

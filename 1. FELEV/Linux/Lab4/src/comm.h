@@ -34,19 +34,27 @@ void loser(pid_t enemy) {
     exit(0);
 }
 
-sem_t* open_sem() {
-    return sem_open("/Torpedo_sem",O_CREAT|O_RDWR);
+sem_t* open_semA() {
+    sem_t* temp = sem_open("/Torpedo_semA",O_CREAT);
+    sem_init(temp, 0, 0);
+    return temp;
 }
 
-// void pWin(int x) {
-//     cout << "\n\n\n\033[1;33mWINNER, WINNER, CHICKEN DINNER!\033[0m\n\n\n";
-//     exit(0);
-// }
+sem_t* open_semB() {
+    sem_t* temp = sem_open("/Torpedo_semB",O_CREAT);
+    sem_init(temp,0,0);
+    return temp;
+}
 
-// void pLose(int x) {
-//     cout << "\n\n\n\033[1;31mYOU LOSE!\033[0m\n\n\n";
-//     exit(0);
-// }
+void pWinS(int x) {
+    cout << "\n\n\n\033[1;33mWINNER, WINNER, CHICKEN DINNER!\033[0m\n\n\n";
+    exit(0);
+}
+
+void pLoseS(int x) {
+    cout << "\n\n\n\033[1;31mYOU LOSE!\033[0m\n\n\n";
+    exit(0);
+}
 
 void pWin() {
     cout << "\n\n\n\033[1;33mWINNER, WINNER, CHICKEN DINNER!\033[0m\n\n\n";

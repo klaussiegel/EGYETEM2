@@ -50,8 +50,8 @@ void input(Player& a) {
     cin >> v_t;
     cout << "\n\tStarting position (TOP POSITION or LEFT-MOST POSITION)\n\t\ti: ";
     cin >> start.i; cout << "\n\t\tj: "; cin >> start.j;
-    Ship x3(CRUISER,start,v_t);
-    a.a.addShip(x3);
+    Ship x4(CRUISER,start,v_t);
+    a.a.addShip(x4);
 
     // DESTROYER
     cout << "Please enter where you wanna place your destroyer (3):\n\t";
@@ -59,8 +59,8 @@ void input(Player& a) {
     cin >> v_t;
     cout << "\n\tStarting position (TOP POSITION or LEFT-MOST POSITION)\n\t\ti: ";
     cin >> start.i; cout << "\n\t\tj: "; cin >> start.j;
-    Ship x3(CRUISER,start,v_t);
-    a.a.addShip(x3);
+    Ship x5(CRUISER,start,v_t);
+    a.a.addShip(x5);
 }
 
 index move(Player a) {
@@ -80,13 +80,17 @@ index move(Player a) {
 int main() {
     system("clear");
     // GET SEMAPHORE
-    sem_t* sem = open_sem();
+    sem_t* semA = open_semA();
+    sem_t* semB = open_semB();
 
     SharedMemory shm(0);
 
     // INIT & SETUP
     Player a;
     bool resp;
+
+    signal(SIGUSR1,pWinS);
+    signal(SIGUSR2,pLoseS);
 
     do {
         system("clear");
@@ -103,18 +107,24 @@ int main() {
 
     for (int i=1; i<=7; i++) {
         init_moves.push_back(move(a));
-        while ()
     }
 
+    // INITIAL 7 MOVES
     for (index x : init_moves) {
         a.setTarget(x);
         a.writeToSHM(shm);
+        sem_post(semB);
+        sem_wait(semA);
+        a.readFromSHM7a(shm);
     }
 
     while (true) {
-        // INITIAL 7 MOVES
-
-
+        index x = move(a);
+        a.setTarget(x);
+        a.writeToSHM(shm);
+        sem_post(semB);
+        sem_wait(semA);
+        a.readFromSHM(shm);
     }
 
     return 0;

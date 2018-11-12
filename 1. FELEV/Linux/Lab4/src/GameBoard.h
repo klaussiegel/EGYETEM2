@@ -66,6 +66,7 @@ class GameBoard {
                 deque<index> seged = x.getPoz();
 
                 for (index k : seged) {
+                    if (this->a[k.i][k.j] == MY) throw "Illegal Move (overlap)";
                     this->a[k.i][k.j] = MY;
                 }
             } catch (string e) {

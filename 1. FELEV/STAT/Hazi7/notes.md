@@ -14,7 +14,7 @@ $F_X(x) = \int\limits_{-\infty}^{x} f_X(t)\;dt$
 
 $f_X(x) = \frac{d}{dx} F_X(x)$
 
-$E (x)= \int\limits_{-\infty}^{\infty}x\;f_X(x)\;dx$
+$E = \int\limits_{-\infty}^{\infty}x\;f_X(x)\;dx$
 
 $Var(x) = \int\;(x-\int (\,x\;f_X(x)\,)\;dx\;)^2\;f_X(x)\;dx$
 

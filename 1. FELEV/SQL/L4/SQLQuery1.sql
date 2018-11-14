@@ -1,3 +1,5 @@
+USE Lab4_1
+
 --	1. Adjuk meg minden felhasznalo eseten az elmult negyedevben publikalt cikkeinek szamat!
 --	(Felhasznalok.FelhasznaloNev, CikkekSzama)
 
@@ -7,16 +9,56 @@ GROUP BY FelhasznaloNev
 
 --	2. Adjuk meg a legfrissebben regisztralt romaniai felhasznalo(k) cikkeinek szamat! (OsszCikkszam)
 
-SELECT COUNT(DISTINCT Cikkek.CikkID) AS Romaniai_Cikkek_Szama FROM Felhasznalok, Orszagok, Cikkek
+SELECT COUNT(DISTINCT Cikkek.CikkID) AS OsszCikkszam FROM Felhasznalok, Orszagok, Cikkek
 WHERE Felhasznalok.FelhasznaloID=Cikkek.SzerzoID AND Felhasznalok.OrszagID=Orszagok.OrszagID AND Orszagok.OrszagNev LIKE '%Romania%'
 
 --	3. Adjuk meg azon felhasznalo(ka)t, aki(k) minden kategoriaba irt(ak) cikket! (Felhasznalok.FelhasznaloNev, Felhasznalok.EmailCim)
 
-SELECT Felhasznalok.FelhasznaloNev, Felhasznalok.EmailCim FROM Felhasznalok, Cikkek, Kategoriak
-WHERE Felhasznalok.FelhasznaloID=Cikkek.SzerzoID AND Cikkek.KategoriaID=Kategoriak.KategoriaID
--- AND
+DECLARE @sajat TABLE(
+	CikkID INT,
+	CikkCim VARCHAR(50),
+	Datum DATE DEFAULT '1990-01-01',
+	Szoveg VARCHAR(max),
+	SzerzoID INT,
+	KategoriaID INT,
+	Ertekeles INT
+)
 
---	4. Adjuk meg kategoriakon belul szerzonkent a cikkek maximalis ertekeleset!  (Kategoriak.KategoriaNev, Felhasznalok.FelhasznaloNev, MaxCikkErtekeles)
+INSERT INTO @sajat 
+SELECT *  FROM Cikkek
+
+INSERT INTO @sajat(CikkID,CikkCim,Datum,Szoveg,SzerzoID,KategoriaID,Ertekeles) VALUES (11,'Seged1', '2018-10-10', null, 1, 1, 3),
+(12,'Seged2', '2018-10-10', null, 1, 3, 3),
+(13,'Seged3', '2018-10-10', null, 1, 4, 3),
+(14,'Seged4', '2018-10-10', null, 1, 5, 3)
+
+SELECT DISTINCT Felhasznalok.FelhasznaloNev, Felhasznalok.EmailCim INTO #a
+
+DECLARE @i INT = 1;
+DECLARE @max INT = (SELECT COUNT(*) FROM Kategoriak)
+
+WHILE (@i<=@max)
+BEGIN
+	SELECT * FROM #a
+	INNER JOIN Felhasznalok.FelhasznaloNev, Felhasznalok.EmailCim FROM Felhasznalok, @sajat AS S, Kategoriak
+	WHERE Felhasznalok.FelhasznaloID=S.SzerzoID AND S.KategoriaID=Kategoriak.KategoriaID
+	AND S.KategoriaID = @i
+
+	SET @i += 1;
+END
+
+	SELECT * FROM #a
+
+--SELECT Felhasznalok.FelhasznaloNev, Felhasznalok.FelhasznaloID FROM Felhasznalok, #a
+--WHERE
+--	Felhasznalok.FelhasznaloNev=#a.FelhasznaloNev AND #a.FelhasznaloNev=#b.FelhasznaloNev AND
+--	#b.FelhasznaloNev=#c.FelhasznaloNev AND #c.FelhasznaloNev=#d.FelhasznaloNev AND #d.FelhasznaloNev=#e.FelhasznaloNev
+
+--	4. Adjuk meg kategoriakon belul szerzonkent a cikkek maximalis ertekeleset!
+--	(Kategoriak.KategoriaNev, Felhasznalok.FelhasznaloNev, MaxCikkErtekeles)
+
+--SELECT Kategoriak.KategoriaNev, Felhasznalok.FelhasznaloNev FROM Kategoriak, Felhasznalok, Cikkek
+--WHERE Kategoriak.KategoriaID=Cikkek.KategoriaID AND Cikkek.SzerzoID=Felhasznalok.FelhasznaloID
 
 --	5. Adjuk meg azon felhasznalo(ka)t, aki(k) minimum 3x hozzaszolt(ak) a legkisebb ertekelessel rendelkezo cikk(ek)hez! (Felhasznalok.FelhasznaloNev)
 

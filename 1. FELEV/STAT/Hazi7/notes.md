@@ -123,4 +123,3 @@ $Var(Poisson_\lambda)=\lambda$
 $E(Poisson_\lambda)=\lambda$
 
 ![POISSON](./src/poisson.png)
-

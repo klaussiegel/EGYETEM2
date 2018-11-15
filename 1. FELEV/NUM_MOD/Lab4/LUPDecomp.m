@@ -15,6 +15,7 @@ function [L,U,P] = LUPDecomp(A)
 		A(io,:) = A(k,:);
 		A(k,:) = aux;
 		P([k io],:) = P([io k],:);
+		P
 		
 		if (m==0)
 			return;

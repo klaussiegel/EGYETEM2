@@ -16,12 +16,17 @@ function [U,c] = GaussElim(A,b)
     end
   end
 	
+	bovitett_A
+	
 	for k=1:(n-1)
 		[m,io] = max(abs(bovitett_A(k:n,k)));
 		io = io + k - 1;
 		aux = bovitett_A(io,:);
 		bovitett_A(io,:) = bovitett_A(k,:);
 		bovitett_A(k,:) = aux;
+		
+		k
+		bovitett_A
 		
 		if (m==0)
 			return;
@@ -31,6 +36,8 @@ function [U,c] = GaussElim(A,b)
 			l = bovitett_A(i,k) / bovitett_A(k,k);
 			bovitett_A(i,:) = bovitett_A(i,:) - l * bovitett_A(k,:);
 		end
+		
+		bovitett_A
 		
 		U = bovitett_A(1:n,1:n);
 		c = bovitett_A(:,n+1);

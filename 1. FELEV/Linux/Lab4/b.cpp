@@ -81,7 +81,6 @@ int main() {
     system("clear");
     // GET SEMAPHORE
     sem_t* semA = open_semA();
-    return 0;
     sem_t* semB = open_semB();
 
     SharedMemory shm;

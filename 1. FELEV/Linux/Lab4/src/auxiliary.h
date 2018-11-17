@@ -70,31 +70,31 @@ void specialPrint(int obj) {
     cout << " ";
     switch (obj) {
         case S_MISS: { // BOLD YELLOW
-            cout << "\033[1;33m~\033[0m ";
+            cout << " \033[1;33m~\033[0m ";
         } break;
 
         case S_HIT: { // BOLD MAGENTA
-            cout << "\033[1;35mX\033[0m ";
+            cout << " \033[1;35mX\033[0m ";
         } break;
 
         case R_MISS: { // BOLD WHITE
-            cout << "\033[1m+\033[0m ";
+            cout << " \033[1m+\033[0m ";
         } break;
 
         case R_HIT: { // BOLD RED
-            cout << "\033[1;31mx\033[0m ";
+            cout << " \033[1;31mx\033[0m ";
         } break;
 
         case ENEMY: { // MAGENTA
-            cout << "\033[35me\033[0m ";
+            cout << " \033[35me\033[0m ";
         } break;
 
         case MY: { // BLUE
-            cout << "\033[1;34mm\033[0m ";
+            cout << " \033[1;34mm\033[0m ";
         } break;
 
         case EMPTY: {
-            cout << "  ";
+            cout << " * ";
         } break;
     }
 }

@@ -13,7 +13,7 @@
 
 using namespace std;
 
-void input(Player& a) {
+void input(Player a) {
     a.a.zero();
     bool v_t;
     index start;
@@ -63,18 +63,16 @@ void input(Player& a) {
     a.a.addShip(x5);
 }
 
-index move(Player a) {
+index move(Player a, index* x) {
     system("clear");
     a.a.printB();
 
-    index x;
-
     cout << "Make a move!\n\ti: ";
-    cin >> x.i;
+    cin >> x->i;
     cout << "\n\tj: ";
-    cin >> x.j;
+    cin >> x->j;
 
-    return x;
+    return *x;
 }
 
 int main() {
@@ -94,7 +92,54 @@ int main() {
 
     do {
         system("clear");
-        input(a);
+        
+        a.a.zero();
+        bool v_t;
+        index start;
+        // CARRIER
+        cout << "Please enter where you wanna place your carrier ship (5):\n\t";
+        cout << "Vertical (0) or horizontal (1) orientation? ";
+        cin >> v_t;
+        cout << "\n\tStarting position (TOP POSITION or LEFT-MOST POSITION)\n\t\ti: ";
+        cin >> start.i; cout << "\n\t\tj: "; cin >> start.j;
+        Ship x1(CARRIER,start,v_t);
+        a.a.addShip(x1);
+
+        // BATTLESHIP
+        cout << "Please enter where you wanna place your battleship (4):\n\t";
+        cout << "Vertical (0) or horizontal (1) orientation? ";
+        cin >> v_t;
+        cout << "\n\tStarting position (TOP POSITION or LEFT-MOST POSITION)\n\t\ti: ";
+        cin >> start.i; cout << "\n\t\tj: "; cin >> start.j;
+        Ship x2(BATTLESHIP,start,v_t);
+        a.a.addShip(x2);
+
+        // CRUISER
+        cout << "Please enter where you wanna place your cruiser (3):\n\t";
+        cout << "Vertical (0) or horizontal (1) orientation? ";
+        cin >> v_t;
+        cout << "\n\tStarting position (TOP POSITION or LEFT-MOST POSITION)\n\t\ti: ";
+        cin >> start.i; cout << "\n\t\tj: "; cin >> start.j;
+        Ship x3(CRUISER,start,v_t);
+        a.a.addShip(x3);
+
+        // SUBMARINE
+        cout << "Please enter where you wanna place your submarine (3):\n\t";
+        cout << "Vertical (0) or horizontal (1) orientation? ";
+        cin >> v_t;
+        cout << "\n\tStarting position (TOP POSITION or LEFT-MOST POSITION)\n\t\ti: ";
+        cin >> start.i; cout << "\n\t\tj: "; cin >> start.j;
+        Ship x4(CRUISER,start,v_t);
+        a.a.addShip(x4);
+
+        // DESTROYER
+        cout << "Please enter where you wanna place your destroyer (2):\n\t";
+        cout << "Vertical (0) or horizontal (1) orientation? ";
+        cin >> v_t;
+        cout << "\n\tStarting position (TOP POSITION or LEFT-MOST POSITION)\n\t\ti: ";
+        cin >> start.i; cout << "\n\t\tj: "; cin >> start.j;
+        Ship x5(DESTROYER,start,v_t);
+        a.a.addShip(x5);
 
         cout << "\n\n\nTHIS IS YOUR SETUP:";
         a.a.printB();
@@ -106,7 +151,11 @@ int main() {
     deque<index> init_moves;
 
     for (int i=1; i<=7; i++) {
-        init_moves.push_back(move(a));
+        index k;
+        move(a,&k);
+        cout << "\n( " << k.i << " , " << k.j << " )\n" ;
+        init_moves.push_back(k);
+        cout << "\n\nOK\n\n";
     }
 
     // INITIAL 7 MOVES
@@ -119,7 +168,8 @@ int main() {
     }
 
     while (true) {
-        index x = move(a);
+        index x;
+        move(a,&x);
         a.setTarget(x);
         a.writeToSHM(shm);
         sem_post(semB);

@@ -38,6 +38,7 @@ class Ship {
                         if (start.i>=0 && start.i<=10 && start.j>=0 && start.j<=11) {
                             this->start = new ext_index[2];
                             this->start[0] = start;
+                            this->start[1] = start;
                             this->start[1].i = start.i+1;
                             this->start[1].j = start.j;
                         } else {
@@ -48,6 +49,7 @@ class Ship {
                         if (start.i>=0 && start.i<=11 && start.j>=0 && start.j<=10) {
                             this->start = new ext_index[2];
                             this->start[0] = start;
+                            this->start[1] = start;
                             this->start[1].i = start.i;
                             this->start[1].j = start.j+1;
                         } else {
@@ -63,8 +65,10 @@ class Ship {
                         if (start.i>=0 && start.i<=9 && start.j>=0 && start.j<=11) {
                             this->start = new ext_index[3];
                             this->start[0] = start;
+                            this->start[1] = start;
                             this->start[1].i = start.i+1;
                             this->start[1].j = start.j;
+                            this->start[2] = start;
                             this->start[2].i = start.i+2;
                             this->start[2].j = start.j;
                         } else {
@@ -73,10 +77,12 @@ class Ship {
                     } else {
                         this->vert_hor = HORIZONTAL;
                         if (start.i>=0 && start.i<=11 && start.j>=0 && start.j<=9) {
-                            this->start = new ext_index[2];
+                            this->start = new ext_index[3];
                             this->start[0] = start;
+                            this->start[1] = start;
                             this->start[1].i = start.i;
                             this->start[1].j = start.j+1;
+                            this->start[2] = start;
                             this->start[2].i = start.i;
                             this->start[2].j = start.j+2;
                         } else {
@@ -92,10 +98,13 @@ class Ship {
                         if (start.i>=0 && start.i<=8 && start.j>=0 && start.j<=11) {
                             this->start = new ext_index[4];
                             this->start[0] = start;
+                            this->start[1] = start;
                             this->start[1].i = start.i+1;
                             this->start[1].j = start.j;
+                            this->start[2] = start;
                             this->start[2].i = start.i+2;
                             this->start[2].j = start.j;
+                            this->start[3] = start;
                             this->start[3].i = start.i+3;
                             this->start[3].j = start.j;
                         } else {
@@ -106,10 +115,13 @@ class Ship {
                         if (start.i>=0 && start.i<=11 && start.j>=0 && start.j<=8) {
                             this->start = new ext_index[4];
                             this->start[0] = start;
+                            this->start[1] = start;
                             this->start[1].i = start.i;
                             this->start[1].j = start.j+1;
+                            this->start[2] = start;
                             this->start[2].i = start.i;
                             this->start[2].j = start.j+2;
+                            this->start[3] = start;
                             this->start[3].i = start.i;
                             this->start[3].j = start.j+3;
                         } else {
@@ -126,12 +138,16 @@ class Ship {
                         if (start.i>=0 && start.i<=7 && start.j>=0 && start.j<=11) {
                             this->start = new ext_index[5];
                             this->start[0] = start;
+                            this->start[1] = start;
                             this->start[1].i = start.i+1;
                             this->start[1].j = start.j;
+                            this->start[2] = start;
                             this->start[2].i = start.i+2;
                             this->start[2].j = start.j;
+                            this->start[3] = start;
                             this->start[3].i = start.i+3;
                             this->start[3].j = start.j;
+                            this->start[4] = start;
                             this->start[4].i = start.i+4;
                             this->start[4].j = start.j;
                         } else {
@@ -142,12 +158,16 @@ class Ship {
                         if (start.i>=0 && start.i<=11 && start.j>=0 && start.j<=7) {
                             this->start = new ext_index[5];
                             this->start[0] = start;
+                            this->start[1] = start;
                             this->start[1].i = start.i;
                             this->start[1].j = start.j+1;
+                            this->start[2] = start;
                             this->start[2].i = start.i;
                             this->start[2].j = start.j+2;
+                            this->start[3] = start;
                             this->start[3].i = start.i;
                             this->start[3].j = start.j+3;
+                            this->start[4] = start;
                             this->start[4].i = start.i;
                             this->start[4].j = start.j+4;
                         } else {

@@ -59,23 +59,27 @@ class GameBoard {
         }
 
         void addShip(int type, index st, int v_h) {
-            try {
-                Ship x(type,st,v_h);
-                this->ships.push_back(x);
+            Ship x(type,st,v_h);
 
-                deque<index> seged = x.getPoz();
+            deque<index> seged = x.getPoz();
 
-                for (index k : seged) {
-                    if (this->a[k.i][k.j] == MY) throw "Illegal Move (overlap)";
-                    this->a[k.i][k.j] = MY;
-                }
-            } catch (string e) {
-                throw e;
+            for (index k : seged) {
+                if (this->a[k.i][k.j] == MY) throw "Illegal Move (overlap)";
+                this->a[k.i][k.j] = MY;
             }
+
+            this->ships.push_back(x);
         }
 
         void addShip(Ship x) {
             this->ships.push_back(x);
+            deque<index> seged = x.getPoz();
+
+            for (index k : seged) {
+                this->a[k.i][k.j] = MY;
+            }
+
+            this->printB();
         }
 
         void destroyShip(Ship x) {
@@ -92,6 +96,10 @@ class GameBoard {
             return this->a[i][j];
         }
 
+        int getInd(index x) {
+            return this->getInd(x.i,x.j);
+        }
+
         void setInd(int i, int j, int value) {
             if (i<0 || i>=this->size || j<0 || j>=this->size) throw "Out of bounds!";
             this->a[i][j] = value;
@@ -103,6 +111,7 @@ class GameBoard {
                 cout << "\t";
                 for (int j=0; j<this->size; j++) {
                     specialPrint(this->a[i][j]);
+                    // cout << a[i][j] << " ";
                 }
                 cout << "\n";
             }
@@ -121,7 +130,8 @@ class GameBoard {
                         else return HIT;
                     } else return HIT;
                 }
-            } else return MISS;
+            }
+            return MISS;
         }
 
         bool doom() {

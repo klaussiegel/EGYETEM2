@@ -35,14 +35,12 @@ void loser(pid_t enemy) {
 }
 
 sem_t* open_semA() {
-    sem_t* temp = sem_open("/Torpedo_semA",O_CREAT);
-    sem_init(temp, 0, 0);
+    sem_t* temp = sem_open("/Torpedo_semA",O_CREAT,0777,0);
     return temp;
 }
 
 sem_t* open_semB() {
-    sem_t* temp = sem_open("/Torpedo_semB",O_CREAT);
-    sem_init(temp,0,0);
+    sem_t* temp = sem_open("/Torpedo_semB",O_CREAT,0777,0);
     return temp;
 }
 

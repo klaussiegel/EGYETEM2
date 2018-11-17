@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "*.pr": "prolog",
-        "*.c": "cpp",
-        "deque": "cpp",
-        "iostream": "cpp"
-    }
-}

@@ -1,5 +1,5 @@
 function X = NewtonRaphsonMethod(dist_type, par, a,b,  eps, n)
-    % NewtonRaphsonMethod('pearson', [3, 1], 0.1, 5, 0.01, 5000)	
+    % NewtonRaphsonMethod('gamma',[1,1],0,15,eps,500);hold on;NewtonRaphsonMethod('gamma',[2,1],0,15,eps,500);	
 	X=zeros(1,n);
     F=@(x)ContinuousCDF(x,dist_type,par);
     f=@(x)ContinuousPDF(x,dist_type,par);
@@ -14,5 +14,5 @@ function X = NewtonRaphsonMethod(dist_type, par, a,b,  eps, n)
         end
         X(i) = x;
     end
-    histogram(X);
+%     histogram(X);
 end

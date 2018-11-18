@@ -1,0 +1,17 @@
+function X = Gamma(alfa,beta,n)
+    if (alfa<=0 || beta<=0)
+        error("alfa > 0 , beta > 0")
+    end
+    
+    X = zeros(1,n);
+    
+    for i=1:n
+        U = ULEcuyerRNG;
+        E = alfa/beta;
+        a = E-1; b = E+1;
+        
+        while ~(b-)
+            
+        end
+    end
+end

@@ -45,7 +45,7 @@ class Player {
                 } break;
 
                 case MISS: {
-                    this->a.setInd(this->Prev.i,this->Prev.j,S_MISS);
+                    // this->a.setInd(this->Prev.i,this->Prev.j,S_MISS);
                 } break;
 
                 case LOSE: {
@@ -76,7 +76,7 @@ class Player {
                 } break;
 
                 case MISS: {
-                    this->a.setInd(this->shm.Target.i,this->shm.Target.j,R_MISS);
+                    // this->a.setInd(this->shm.Target.i,this->shm.Target.j,R_MISS);
                 } break;
 
                 case LOSE: {
@@ -97,6 +97,7 @@ class Player {
                 exit(1);
             }
 
+            this->shm.PlayerID = getpid();
             if (this->shm.Prev!=STD) {
                 int prev = this->shm.Prev;
 
@@ -113,7 +114,7 @@ class Player {
                             } break;
 
                             case MISS: {
-                                this->a.setInd(this->shm.Target.i,this->shm.Target.j,R_MISS);
+                                // this->a.setInd(this->shm.Target.i,this->shm.Target.j,R_MISS);
                             } break;
 
                             case LOSE: {
@@ -127,7 +128,7 @@ class Player {
                     } break;
 
                     case MISS: {
-                        this->a.setInd(this->Prev.i,this->Prev.j,S_MISS);
+                        // this->a.setInd(this->Prev.i,this->Prev.j,S_MISS);
                     
                         int resp = this->a.attack(this->shm.Target);
                         this->shm.Prev = resp;
@@ -138,7 +139,7 @@ class Player {
                             } break;
 
                             case MISS: {
-                                this->a.setInd(this->shm.Target.i,this->shm.Target.j,R_MISS);
+                                // this->a.setInd(this->shm.Target.i,this->shm.Target.j,R_MISS);
                             } break;
 
                             case LOSE: {
@@ -171,6 +172,7 @@ class Player {
 
         void writeToSHM(SharedMemory shared_mem) {
             this->Prev = this->shm.Target;
+            this->shm.PlayerID = getpid();
             shared_mem.setContent(this->shm);
         }
 

@@ -76,6 +76,7 @@ class GameBoard {
             deque<index> seged = x.getPoz();
 
             for (index k : seged) {
+                if (this->a[k.i][k.j]==MY) throw "OVERLAP!";
                 this->a[k.i][k.j] = MY;
             }
 

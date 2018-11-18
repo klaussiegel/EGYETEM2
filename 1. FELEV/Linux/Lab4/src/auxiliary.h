@@ -33,6 +33,7 @@ using namespace std;
 #define ENEMY 11
 #define MY 1
 #define EMPTY 0
+#define LOCKED 232
 
 #define LOSE 666
 #define WIN 333
@@ -91,6 +92,10 @@ void specialPrint(int obj) {
 
         case MY: { // BLUE
             cout << " \033[1;34mm\033[0m ";
+        } break;
+
+        case LOCKED: { // YELLOW
+            cout << " \033[1;33m0\033[0m ";
         } break;
 
         case EMPTY: {

@@ -148,14 +148,26 @@ int main() {
         cin >> resp;
     } while (!resp);
 
+    // system("clear");
+    cout << "\n\nWaiting for player B to join...\n\n";
+
+    sem_wait(semA);
+
     deque<index> init_moves;
 
     for (int i=1; i<=7; i++) {
         index k;
-        move(a,&k);
-        cout << "\n( " << k.i << " , " << k.j << " )\n" ;
+        
+        system("clear");
+        a.a.printB();
+
+        cout << "Make a move!\n\ti: ";
+        cin >> k.i;
+        cout << "\n\tj: ";
+        cin >> k.j;
+
+        // cout << "\n( " << k.i << " , " << k.j << " )\n" ;
         init_moves.push_back(k);
-        cout << "\n\nOK\n\n";
     }
 
     // INITIAL 7 MOVES
@@ -169,9 +181,18 @@ int main() {
 
     while (true) {
         index x;
-        move(a,&x);
+        
+        system("clear");
+        a.a.printB();
+
+        cout << "Make a move!\n\ti: ";
+        cin >> x.i;
+        cout << "\n\tj: ";
+        cin >> x.j;
+
         a.setTarget(x);
         a.writeToSHM(shm);
+        shm.printSHM();
         sem_post(semB);
         sem_wait(semA);
         a.readFromSHM(shm);

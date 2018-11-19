@@ -1,3 +1,7 @@
+// Oláh Tamás-Lajos
+// otim1750
+// 523 / 2
+
 #include <iostream>
 # include <stdio.h>
 # include <fcntl.h>

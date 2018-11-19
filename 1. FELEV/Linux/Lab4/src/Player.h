@@ -28,7 +28,7 @@ class Player {
         SHM shm;
         index Prev;
 
-        void readFromSHM7a(SharedMemory shared_mem) {
+        void readFromSHM7a(SharedMemory& shared_mem) {
             this->shm = shared_mem.getContent();
 
             if (this->shm.PlayerID==getpid()) {
@@ -57,7 +57,7 @@ class Player {
             }
         }
 
-        void readFromSHM7b(SharedMemory shared_mem) {
+        void readFromSHM7b(SharedMemory& shared_mem) {
             this->shm = shared_mem.getContent();
 
             if (this->shm.PlayerID==getpid()) {
@@ -89,7 +89,7 @@ class Player {
             }
         }
 
-        void readFromSHM(SharedMemory shared_mem) {
+        void readFromSHM(SharedMemory &shared_mem) {
             this->shm = shared_mem.getContent();
 
             if (this->shm.PlayerID==getpid()) {
@@ -170,7 +170,7 @@ class Player {
             this->shm.Target = k;
         }
 
-        void writeToSHM(SharedMemory shared_mem) {
+        void writeToSHM(SharedMemory& shared_mem) {
             this->Prev = this->shm.Target;
             this->shm.PlayerID = getpid();
             shared_mem.setContent(this->shm);

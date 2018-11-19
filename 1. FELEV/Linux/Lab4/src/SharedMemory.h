@@ -37,6 +37,8 @@ class SharedMemory {
         this->shm_ptr->Target.i = 0;
         this->shm_ptr->Target.j = 0;
         this->shm_ptr->players[0] = getpid();
+
+        this->printSHM();
     }
 
     SharedMemory() {
@@ -52,6 +54,7 @@ class SharedMemory {
         } else this->shm_ptr->player_num++;
 
         this->shm_ptr->players[1] = getpid();
+        this->printSHM();
     }
 
     ~SharedMemory() {
@@ -65,6 +68,7 @@ class SharedMemory {
     void setContent(SHM ct) {
         *this->shm_ptr = ct;
         this->shm_ptr->PlayerID = getpid();
+        this->printSHM();
     }
 
     void printSHM() {

@@ -146,9 +146,9 @@ int main() {
 
         cout << "Is this okay? (0/1) ";
         cin >> resp;
-    } while (!resp);
+    } while (resp!=1);
 
-    // system("clear");
+    system("clear");
     cout << "\n\nWaiting for player B to join...\n\n";
 
     sem_wait(semA);

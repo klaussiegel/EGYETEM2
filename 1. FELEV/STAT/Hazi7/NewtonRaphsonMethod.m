@@ -14,5 +14,5 @@ function X = NewtonRaphsonMethod(dist_type, par, a,b,  eps, n)
         end
         X(i) = x;
     end
-%     histogram(X);
+     histogram(X);
 end

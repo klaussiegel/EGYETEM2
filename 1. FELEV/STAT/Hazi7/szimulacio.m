@@ -19,8 +19,8 @@ function [E,VAR] = szimulacio(n)
         X(i) = ido;
     end
     
-    histogram(X)
+%     histogram(X)
     
-    E = mean(X);
-    VAR = var(X);
+    E = mean(X)
+    VAR = var(X)
 end

@@ -24,5 +24,5 @@ function X = Normalis(mu,sigma,n)
         i = i+1;
     end
     
-    histogram(X);
+%     histogram(X);
 end

@@ -32,22 +32,27 @@ INSERT INTO @sajat(CikkID,CikkCim,Datum,Szoveg,SzerzoID,KategoriaID,Ertekeles) V
 (13,'Seged3', '2018-10-10', null, 1, 4, 3),
 (14,'Seged4', '2018-10-10', null, 1, 5, 3)
 
-SELECT DISTINCT Felhasznalok.FelhasznaloNev, Felhasznalok.EmailCim INTO #a
+SELECT DISTINCT Felhasznalok.FelhasznaloID, Felhasznalok.FelhasznaloNev, Felhasznalok.EmailCim INTO #a FROM Felhasznalok 
 
 DECLARE @i INT = 1;
 DECLARE @max INT = (SELECT COUNT(*) FROM Kategoriak)
 
 WHILE (@i<=@max)
 BEGIN
-	SELECT * FROM #a
-	INNER JOIN Felhasznalok.FelhasznaloNev, Felhasznalok.EmailCim FROM Felhasznalok, @sajat AS S, Kategoriak
+	DROP TABLE #aa
+
+	SELECT Felhasznalok.FelhasznaloID, Felhasznalok.FelhasznaloNev, Felhasznalok.EmailCim INTO #aa FROM Felhasznalok, @sajat AS S, #a AS a, Kategoriak
 	WHERE Felhasznalok.FelhasznaloID=S.SzerzoID AND S.KategoriaID=Kategoriak.KategoriaID
-	AND S.KategoriaID = @i
+	AND S.KategoriaID = @i AND a.FelhasznaloID=Felhasznalok.FelhasznaloID
+
+	DROP TABLE #a
+
+	SELECT * INTO #a FROM #aa
 
 	SET @i += 1;
 END
 
-	SELECT * FROM #a
+	SELECT FelhasznaloNev, EmailCim FROM #a
 
 --SELECT Felhasznalok.FelhasznaloNev, Felhasznalok.FelhasznaloID FROM Felhasznalok, #a
 --WHERE

@@ -115,16 +115,155 @@ BEGIN
 	SET @iii += 1
 END
 SELECT * FROM @s2
+
 --	5. Adjuk meg azon felhasznalo(ka)t, aki(k) minimum 3x hozzaszolt(ak) a
 --	legkisebb ertekelessel rendelkezo cikk(ek)hez!
 --	(Felhasznalok.FelhasznaloNev)
 
 DECLARE @min_ert INT = (SELECT MIN(Cikkek.Ertekeles) FROM Cikkek)
 
-SELECT Felhasznalok.FelhasznaloNev FROM Felhasznalok, 
+DECLARE @min_cid INT = (SELECT Cikkek.CikkID FROM Cikkek
+WHERE Cikkek.Ertekeles = @min_ert)
 
---	6. Adjuk meg minden kulcsszo eseten a hozzajuk rendelt cikk(ek) ertekelesenek atlagat, ezen atlag szerint csokkeno sorrendbe rendezve a kulcsszavakat! (Kulcsszavak.KulcsszoNev, AtlagErtekeles)
+DROP TABLE #q
+SELECT CikkCim, Ertekeles, FelhasznaloID INTO #q FROM Cikkek, Hozzaszolasok
+WHERE Cikkek.CikkID=Hozzaszolasok.CikkID
 
---	7. Adjuk meg felhasznalonkent a cikkeikhez rendelt kulcsszavak szamat! (Azon felhasznalok is erdekelnek, akik egyetlen kulcsszot sem rendeltek a cikkeikhez.) (Cikkek.CikkCim, FelhasznalokSzama)
+DECLARE @fel_sz INT = (SELECT COUNT(FelhasznaloID) FROM Felhasznalok)
+DECLARE @ij INT = 1
+
+WHILE (@ij<=@fel_sz)
+BEGIN
+	DECLARE @cnt INT = (SELECT COUNT(*) FROM Hozzaszolasok WHERE CikkID=@min_cid AND FelhasznaloID=@ij)
+	PRINT @cnt
+
+	IF (@cnt=3)
+	SELECT Felhasznalok.FelhasznaloNev FROM Felhasznalok WHERE FelhasznaloID=@ij
+
+	SET @ij += 1
+END
+
+--	6. Adjuk meg minden kulcsszo eseten a hozzajuk rendelt cikk(ek) ertekelesenek atlagat,
+--	ezen atlag szerint csokkeno sorrendbe rendezve a kulcsszavakat!
+--	(Kulcsszavak.KulcsszoNev, AtlagErtekeles)
+
+DECLARE @segedd TABLE (
+	KulcsszoNev VARCHAR(30),
+	AtlagErtekeles FLOAT
+)
+
+DECLARE @ksz_n INT = (SELECT COUNT(*) FROM Kulcsszavak)
+DECLARE @ijk INT = 1
+
+WHILE (@ijk<=@ksz_n)
+BEGIN
+	DECLARE @ertek FLOAT = (SELECT AVG(Cikkek.Ertekeles) FROM Cikkek, Kulcsszavai
+	WHERE Cikkek.CikkID = Kulcsszavai.CikkID AND Kulcsszavai.KulcsszoID=@ijk)
+
+	DECLARE @ksznev VARCHAR(30) = (SELECT Kulcsszavak.KulcsszoNev FROM Kulcsszavak WHERE Kulcsszavak.KulcsszoID=@ijk)
+
+	INSERT INTO @segedd(KulcsszoNev,AtlagErtekeles) VALUES (@ksznev,@ertek)
+
+	SET @ijk += 1
+END
+
+SELECT * FROM @segedd
+WHERE AtlagErtekeles IS NOT NULL
+
+--	7. Adjuk meg felhasznalonkent a cikkeikhez rendelt kulcsszavak szamat!
+--	(Azon felhasznalok is erdekelnek, akik egyetlen kulcsszot sem rendeltek a cikkeikhez.)
+--	(Cikkek.CikkCim, FelhasznalokSzama)
+
+DECLARE @segede TABLE(
+	CikkCim VARCHAR(50),
+	FelhasznalokSzama INT
+)
+
+DECLARE @max_cikk INT = (SELECT COUNT(*) FROM Cikkek)
+DECLARE @iter INT = 1
+
+WHILE (@iter<=@max_cikk)
+BEGIN
+	DECLARE @nev VARCHAR(50) = (SELECT Cikkek.CikkCim FROM Cikkek WHERE Cikkek.CikkID=@iter)
+	DECLARE @ksz INT = (SELECT COUNT(*) FROM Kulcsszavai WHERE Kulcsszavai.CikkID=@iter)
+
+	INSERT INTO @segede(CikkCim,FelhasznalokSzama) VALUES (@nev,@ksz)
+
+	SET @iter += 1
+END
+
+SELECT * FROM @segede
 
 --	8. Adjuk meg azon orszagokat, amelynek felhasznaloi ritkan irtak cikket az elmult 2 honapban! (ritkan = kevesebb, mint 3 cikk/orszag)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- III. Feladat: 
+-- A lab3 II. 9-12. feladatait oldjatok meg valtozok, temporalis tablak es/vagy tabla tipusu valtozok hasznalataval!
+
+--		9. Modositsuk azon baratok cimet ’ismeretlen’-re,
+--		akik kedvelik a 'Orren Broadhurst' nevu kocsmat!
+
+DECLARE @kocsma_nev VARCHAR(30) = 'Orren Broadhurst'
+
+UPDATE Baratok
+SET Baratok.Cim='ismeretlen'
+WHERE Baratok.BaratID IN (
+	SELECT Baratok.BaratID FROM Baratok, Kedvencek, Kocsmak
+	WHERE Baratok.BaratID=Kedvencek.BaratID AND Kedvencek.KocsmaID=Kocsmak.KocsmaID AND Kocsmak.Nev=@kocsma_nev
+)
+
+--		10. Toroljuk a 'Rik Turbard’ nevu baratot!
+
+DECLARE @magic_name VARCHAR(20)='Rik Turbard'
+
+DELETE FROM Kedvencek
+WHERE Kedvencek.BaratID IN (SELECT Baratok.BaratID FROM Baratok WHERE Baratok.Nev=@magic_name)
+
+DELETE FROM Baratok
+WHERE Baratok.Nev=@magic_name
+
+--		11. Szurjuk be azon barato(ka)t a Kedvencek tablaba,
+--		akik e-mail cime ’.com’-ban vegzodik, a ’Lewes Ledbetter’ kocsmaval!
+
+DECLARE @LL_id int;
+SET @LL_id = (SELECT Kocsmak.KocsmaID FROM Kocsmak WHERE Kocsmak.Nev='Lewes Ledbetter')
+
+INSERT INTO Kedvencek(KocsmaID,BaratID)
+SELECT @LL_id,BaratID FROM Baratok
+WHERE Baratok.Email LIKE '%.com'
+
+--		12. Noveljuk az alkoholos italok arat 10-zel es csokkentsuk a ’tea’ és ’tonic’
+--		tipusu italoket 5-tel, amennyiben a csokkentes muvelet nem eredmenyez negativ arat!
+
+	DECLARE @Alkoholos TABLE (ItalID int)
+	INSERT INTO @Alkoholos
+		SELECT Italok.ItalID FROM Italok,ItalTipusok
+		WHERE Italok.TipusID=ItalTipusok.TipusID AND ItalTipusok.TipusNev NOT IN ('tea','tonic')
+
+
+	DECLARE @Alkoholmentes TABLE (ItalID int)
+	INSERT INTO @Alkoholmentes
+		SELECT Italok.ItalID FROM Italok,ItalTipusok
+		WHERE Italok.TipusID=ItalTipusok.TipusID AND ItalTipusok.TipusNev IN ('tea','tonic')
+
+	UPDATE Arak
+	SET Arak.Ar = CASE
+		WHEN Arak.ItalID NOT IN (SELECT * FROM @Alkoholmentes AS Al) THEN Arak.Ar + 10
+		ELSE CASE
+			WHEN Arak.Ar>=5 THEN Arak.Ar - 5
+			ELSE Arak.Ar
+		END
+	END

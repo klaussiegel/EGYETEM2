@@ -119,6 +119,10 @@ SELECT * FROM @s2
 --	legkisebb ertekelessel rendelkezo cikk(ek)hez!
 --	(Felhasznalok.FelhasznaloNev)
 
+DECLARE @min_ert INT = (SELECT MIN(Cikkek.Ertekeles) FROM Cikkek)
+
+SELECT Felhasznalok.FelhasznaloNev FROM Felhasznalok, 
+
 --	6. Adjuk meg minden kulcsszo eseten a hozzajuk rendelt cikk(ek) ertekelesenek atlagat, ezen atlag szerint csokkeno sorrendbe rendezve a kulcsszavakat! (Kulcsszavak.KulcsszoNev, AtlagErtekeles)
 
 --	7. Adjuk meg felhasznalonkent a cikkeikhez rendelt kulcsszavak szamat! (Azon felhasznalok is erdekelnek, akik egyetlen kulcsszot sem rendeltek a cikkeikhez.) (Cikkek.CikkCim, FelhasznalokSzama)

@@ -94,7 +94,8 @@ CREATE TABLE Kedvencek (
 
 INSERT INTO Orszagok VALUES ('Romania'),	  --1
 							('Magyarorszag'), --2							
-							('Nemetorszag') --3
+							('Nemetorszag'), --3
+							('Sziria') --4
 
 INSERT INTO Kategoriak VALUES ('Politika'), --1
 							  ('Eletmod'),   --2

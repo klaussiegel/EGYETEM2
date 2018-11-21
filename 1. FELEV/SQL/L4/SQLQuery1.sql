@@ -1,3 +1,7 @@
+-- Oláh Tamás-Lajos
+-- otim1750
+-- 523 / 2
+
 USE Lab4_1
 
 --	1. Adjuk meg minden felhasznalo eseten az elmult negyedevben publikalt cikkeinek szamat!
@@ -9,10 +13,14 @@ GROUP BY FelhasznaloNev
 
 --	2. Adjuk meg a legfrissebben regisztralt romaniai felhasznalo(k) cikkeinek szamat! (OsszCikkszam)
 
-SELECT COUNT(DISTINCT Cikkek.CikkID) AS OsszCikkszam FROM Felhasznalok, Orszagok, Cikkek
-WHERE Felhasznalok.FelhasznaloID=Cikkek.SzerzoID AND Felhasznalok.OrszagID=Orszagok.OrszagID AND Orszagok.OrszagNev LIKE '%Romania%'
+DECLARE @maxDATE DATE = (SELECT MAX(RegisztracioDatuma) FROM Felhasznalok)
 
---	3. Adjuk meg azon felhasznalo(ka)t, aki(k) minden kategoriaba irt(ak) cikket! (Felhasznalok.FelhasznaloNev, Felhasznalok.EmailCim)
+SELECT COUNT(DISTINCT Cikkek.CikkID) AS OsszCikkszam FROM Felhasznalok, Orszagok, Cikkek
+WHERE Felhasznalok.FelhasznaloID=Cikkek.SzerzoID AND Felhasznalok.OrszagID=Orszagok.OrszagID
+AND Orszagok.OrszagNev LIKE '%Romania%' AND Felhasznalok.RegisztracioDatuma=@maxDATE
+
+--	3. Adjuk meg azon felhasznalo(ka)t, aki(k) minden kategoriaba irt(ak) cikket!
+--	(Felhasznalok.FelhasznaloNev, Felhasznalok.EmailCim)
 
 DECLARE @sajat TABLE(
 	CikkID INT,
@@ -69,11 +77,6 @@ BEGIN
 END
 
 	SELECT FelhasznaloNev, EmailCim FROM @a
-
---SELECT Felhasznalok.FelhasznaloNev, Felhasznalok.FelhasznaloID FROM Felhasznalok, #a
---WHERE
---	Felhasznalok.FelhasznaloNev=#a.FelhasznaloNev AND #a.FelhasznaloNev=#b.FelhasznaloNev AND
---	#b.FelhasznaloNev=#c.FelhasznaloNev AND #c.FelhasznaloNev=#d.FelhasznaloNev AND #d.FelhasznaloNev=#e.FelhasznaloNev
 
 --	4. Adjuk meg kategoriakon belul szerzonkent a cikkek maximalis ertekeleset!
 --	(Kategoriak.KategoriaNev, Felhasznalok.FelhasznaloNev, MaxCikkErtekeles)
@@ -174,30 +177,82 @@ WHERE AtlagErtekeles IS NOT NULL
 --	(Azon felhasznalok is erdekelnek, akik egyetlen kulcsszot sem rendeltek a cikkeikhez.)
 --	(Cikkek.CikkCim, FelhasznalokSzama)
 
+GO
+CREATE FUNCTION FelhKszN (@FID INT)
+RETURNS INT
+BEGIN
+	DECLARE @temppp INT = (
+		SELECT COUNT(Kulcsszavai.KulcsszoID) FROM Cikkek, Kulcsszavai
+		WHERE Cikkek.SzerzoID=@FID AND Cikkek.CikkID=Kulcsszavai.CikkID
+	)
+
+	RETURN @temppp
+END
+GO
+
 DECLARE @segede TABLE(
 	CikkCim VARCHAR(50),
 	FelhasznalokSzama INT
 )
 
-DECLARE @max_cikk INT = (SELECT COUNT(*) FROM Cikkek)
-DECLARE @iter INT = 1
+DECLARE @seged222 TABLE(
+	FelhasznaloNev VARCHAR(20),
+	KulcsszoSzam INT
+)
 
-WHILE (@iter<=@max_cikk)
+DECLARE @max_felh INT = (SELECT COUNT(*) FROM Felhasznalok)
+DECLARE @it_felh INT = 1
+
+WHILE (@it_felh<=@max_felh)
 BEGIN
-	DECLARE @nev VARCHAR(50) = (SELECT Cikkek.CikkCim FROM Cikkek WHERE Cikkek.CikkID=@iter)
-	DECLARE @ksz INT = (SELECT COUNT(*) FROM Kulcsszavai WHERE Kulcsszavai.CikkID=@iter)
+	DECLARE @temporary INT = (SELECT [dbo].[FelhKszN] (@it_felh))
 
-	INSERT INTO @segede(CikkCim,FelhasznalokSzama) VALUES (@nev,@ksz)
+	DECLARE @fnevv VARCHAR(20) = (SELECT Felhasznalok.FelhasznaloNev FROM Felhasznalok WHERE Felhasznalok.FelhasznaloID=@it_felh)
 
-	SET @iter += 1
+	INSERT INTO @seged222(FelhasznaloNev,KulcsszoSzam)
+	VALUES (@fnevv,@temporary)
+
+	SET @it_felh += 1
 END
 
-SELECT * FROM @segede
+SELECT * FROM @seged222
 
---	8. Adjuk meg azon orszagokat, amelynek felhasznaloi ritkan irtak cikket az elmult 2 honapban! (ritkan = kevesebb, mint 3 cikk/orszag)
+--	8. Adjuk meg azon orszagokat, amelynek felhasznaloi ritkan irtak cikket
+--	az elmult 2 honapban! (ritkan = kevesebb, mint 3 cikk/orszag)
 
+GO
+CREATE FUNCTION orszag_szam_elem_2_ho (@OrszagID INT)
+RETURNS INT
+BEGIN
+	DECLARE @szam INT = (
+		SELECT COUNT(*) FROM Orszagok, Felhasznalok, Cikkek
+		WHERE Orszagok.OrszagID=@OrszagID AND Felhasznalok.OrszagID=Orszagok.OrszagID AND Cikkek.SzerzoID=Felhasznalok.FelhasznaloID
+		AND ABS(MONTH(Cikkek.Datum)-MONTH(GETDATE()))<=2
+	)
 
+	RETURN @szam
+END
+GO
 
+DECLARE @outputO TABLE (
+	OrszagNev VARCHAR(30)
+)
+
+DECLARE @orsz_n INT = (SELECT COUNT(*) FROM Orszagok)
+DECLARE @orsz_i INT = 1
+
+WHILE (@orsz_i<=@orsz_n)
+BEGIN
+	DECLARE @tempp INT = (select [dbo].[orszag_szam_elem_2_ho] (@orsz_i))
+
+	IF (@tempp<3)
+		INSERT INTO @outputO
+		SELECT Orszagok.OrszagNev FROM Orszagok WHERE Orszagok.OrszagID=@orsz_i
+
+	SET @orsz_i += 1
+END
+
+SELECT * FROM @outputO
 
 
 

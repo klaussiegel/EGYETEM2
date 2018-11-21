@@ -124,69 +124,63 @@ mq_close(qid);                            //üzenetsor bezárása
 Eredmény:
 **`0`** **ha sikeresen bezárta különben `-1` és az `errno` megfelelően be lesz állítva**
 
----
 
-Üzenet küldése  (mq_send())
+### ÜZENET KÜLDÉSE  (`mq_send()`)
 
-A mq_send()  rendszerfüggvény betesz egy üzenetet egy létező üzenetsorba.
+A **`mq_send()`**  rendszerfüggvény **betesz egy üzenetet egy létező üzenetsorba**.
 
-Szintaxis:
-
+```c
 #include <mqueue.h>
 
 int mq_send( mqd_t mqdes,
-
              const char *msg_ptr,
-
              size_t msg_len,
-
              unsigned int msg_prio );
+```
 
-Az mq_send() beteszi a msg_len méretű msq_ptr által mutatott üzenetet msg_prio prioritással az mqdes deszkriptorú üzenetsorba
-Az üzenetek rendezve vannak a prioritásuk szerint (0-tól MQ_PRIO_MAX-ig). Ezen belül pedig FIFO sorrendbe.
-Ha az üzenetsor megtelt és az O_NONBLOCK nem volt megadva, az mq_send() blokkolja a folyamatot egész addig amíg nem lesz hely.
+**Az `mq_send()` beteszi a `msg_len` méretű `msq_ptr` által mutatott üzenetet `msg_prio` prioritással az `mqdes` deszkriptorú üzenetsorba**
+
+**Az üzenetek rendezve vannak a prioritásuk szerint** (0-tól `MQ_PRIO_MAX`-ig).
+**Ezen belül pedig FIFO sorrendbe.**
+
+Ha az üzenetsor **megtelt** és az `O_NONBLOCK` **nem volt megadva**, az `mq_send()` **blokkolja a folyamatot egész addig amíg nem lesz hely**.
 
 Példa:
+```c
+Msg msg = {rand() % 100, rand() % 100, rand() % 100, 0};
 
-                Msg msg = {rand() % 100, rand() % 100, rand() % 100, 0};
+int prio = rand() % MQ_PRIO_MAX;
 
-        int prio = rand() % MQ_PRIO_MAX;
-
-if (mq_send(qid, (char*) &msg, sizeof(Msg), prio) == -1) //üzenet küldése
-
-        {
-
-              perror("Failed to send msg");
-
-        }
+//üzenet küldése
+if (mq_send(qid, (char*) &msg, sizeof(Msg), prio) == -1)
+    perror("Failed to send msg");
+```
 
 Eredmeny:
 
-                        0 ha sikeresen bezárta különben -1 és az errno megfelelően be lesz állítva
+**`0`** **ha sikeresen bezárta különben `-1` és az `errno` megfelelően be lesz állítva**
 
-escription: Description: Description: Description: Description: Description: Description: C:\Users\ReB\Desktop\Folyamatok\buttons\g_book.gif  Üzenet fogadása  (mq_receive())
+### ÜZENET FOGADÁSA  (`mq_receive()`)
 
-Az mq_receive() rendszerfüggvény kiolvas egy üzenetet egy létező üzenetsorból.
+Az **`mq_receive()`** rendszerfüggvény **kiolvas egy üzenetet egy létező üzenetsorból**.
 
-Szintaxis:
-
+```c
 #include <mqueue.h>
 
 int mq_receive( mqd_t mqdes,
-
                 char *msg_ptr,
-
                 size_t msg_len,
-
                 unsigned int *msg_prio );
+```
 
-Az mq_receive() kiolvas egy msg_len méretű üzenetet az mqdes deszkriptorú üzenetsorból az msg_ptr által mutatott helyre. A msg_prio arra az egészre (integer) mutat amelybe a prioritást fogjuk megkapni
+**Az `mq_receive()` kiolvas egy `msg_len` méretű üzenetet az `mqdes` deszkriptorú üzenetsorból az `msg_ptr` által mutatott helyre.**
+**A `msg_prio` arra az egészre (`int`) mutat amelybe a prioritást fogjuk megkapni**
 
-mq_receive() abban az esetben blokkol ha:
+**`mq_receive()`** abban az esetben **blokkol** ha:
+- **nincs üzenet**
+- **`O_NONBLOCK` nem volt bealítva az `mq_open()` hívásakor.**
 
-            -nincs üzenet
-
-            - O_NONBLOCK nem volt bealítva az mq_open() hívásakor.
+---
 
 Ha nem érdekel az üzenet prioritása akkor az msg_prio NULL.
 
@@ -220,7 +214,7 @@ Eredmény:
 
             -1 ha nem sikerült.
 
-escription: Description: Description: Description: Description: Description: Description: C:\Users\ReB\Desktop\Folyamatok\buttons\g_book.gif  Lecsatlakozás az üzenetsorról  (mq_unlink ())
+Lecsatlakozás az üzenetsorról  (mq_unlink ())
 
 Az mq_unlink() rendszerfüggvény lecsatlakozik az üzenetsorról
 
@@ -241,7 +235,7 @@ Eredmény:
             0: sikeres
             -1: sikertelen és errno-t beállítja
 
-escription: Description: Description: Description: Description: Description: Description: Description: C:\Users\ReB\Desktop\Folyamatok\buttons\g_book.gif  Üzenetsor tulajdonságainak lekérdezése  (mq_getattr())
+Üzenetsor tulajdonságainak lekérdezése  (mq_getattr())
 
 Az mq_getattr() rendszerfüggvény lekérdézi az üzenetsor tulajdonságait.
 
@@ -271,7 +265,7 @@ Eredmény:
             0: sikeres
             -1: sikertelen és errno-t beállítja
 
-escription: Description: Description: Description: Description: Description: Description: Description: C:\Users\ReB\Desktop\Folyamatok\buttons\g_book.gif  Üzenetsor tulajdonságainak beállítása (mq_setattr())
+Üzenetsor tulajdonságainak beállítása (mq_setattr())
 
 Az mq_setattr() rendszerfüggvény beállítja az üzenetsor tulajdonságait.
 
